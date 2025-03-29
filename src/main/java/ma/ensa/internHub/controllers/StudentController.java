@@ -1,15 +1,21 @@
 package ma.ensa.internHub.controllers;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
 import ma.ensa.internHub.services.StudentService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -17,11 +23,6 @@ import java.util.UUID;
 public class StudentController {
 
     private final StudentService studentService;
-
-    @PostMapping
-    public ResponseEntity<StudentResponse> createStudent(@RequestBody StudentRequest request) {
-        return new ResponseEntity<>(studentService.createStudent(request), HttpStatus.CREATED);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponse> getStudentById(@PathVariable UUID id) {

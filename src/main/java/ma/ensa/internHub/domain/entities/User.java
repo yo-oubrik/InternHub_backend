@@ -11,7 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "Users")
+@AllArgsConstructor
+@Table(name = "_User")
 @DiscriminatorColumn(name = "role")
 public abstract class User extends BaseEntity implements Serializable {
     @Id
@@ -34,6 +36,6 @@ public abstract class User extends BaseEntity implements Serializable {
     private String email;
 
     @NotBlank(message = "Password is required")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@!#$%^&+=])(?=\\S+$).{8,}$", message = "Password must be at least 8 characters long and contain at least one digit, one lowercase letter, one uppercase letter, and one special character")
+    @Size(min = 8, message = "Password should be at least 8 characters")
     private String password;
 }

@@ -3,6 +3,7 @@ package ma.ensa.internHub.domain.entities;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import ma.ensa.internHub.validation.ValidName;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @DiscriminatorValue("STUDENT")
 public class Student extends User {
     @NotBlank(message = "First name is required")

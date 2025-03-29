@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
 import ma.ensa.internHub.domain.entities.Student;
+import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.exception.EmptyResourcesException;
 import ma.ensa.internHub.mappers.StudentMapper;
 import ma.ensa.internHub.repositories.StudentRepository;
 import ma.ensa.internHub.services.StudentService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -21,10 +23,17 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public StudentResponse createStudent(StudentRequest request) {
+        if (studentRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("Email already exists");
+        }
+
         Student student = studentMapper.toEntity(request);
+        student.setPassword(passwordEncoder.encode(request.getPassword()));
+
         student = studentRepository.save(student);
         return studentMapper.toResponse(student);
     }
