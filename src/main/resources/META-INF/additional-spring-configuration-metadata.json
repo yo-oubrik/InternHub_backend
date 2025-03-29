@@ -1,0 +1,7 @@
+{"properties": [
+  {
+    "name": "jwt.secret",
+    "type": "java.lang.String",
+    "description": "Secret used to sign JWTs. When not set, JWT support is disabled."
+  }
+]}
