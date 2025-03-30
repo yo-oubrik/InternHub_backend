@@ -1,22 +1,20 @@
 package ma.ensa.internHub.domain.dto.response;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentResponse {
+public class CompanyResponse {
     private UUID id;
-    private String firstName;
-    private String lastName;
+    private String name;
+    private String description;
+    private String address;
     private String email;
-    private String profilePicture;
-    private LocalDateTime createdAt;
+    private String ice;
+    private String rc;
 }

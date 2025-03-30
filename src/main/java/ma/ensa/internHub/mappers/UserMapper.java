@@ -16,7 +16,7 @@ public interface UserMapper {
     UserDto toDto(Student student);
 
     @Mapping(target = "role", constant = "COMPANY")
-    @Mapping(target = "profilePicture", constant = "logo")
+    @Mapping(target = "profilePicture", constant = "")
     UserDto toDto(Company company);
 
     @Mapping(target = "role", constant = "ADMIN")
