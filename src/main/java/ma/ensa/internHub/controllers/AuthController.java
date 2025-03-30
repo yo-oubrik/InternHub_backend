@@ -27,7 +27,12 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         UserDetails userDetails = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         String token = authService.generateToken(userDetails);
-        AuthResponse authResponse = AuthResponse.builder().token(token).expiresIn(864800).build();
+        // Calculate expiration timestamp (current time + 24 hours in milliseconds)
+        long expirationTime = System.currentTimeMillis() + (86400 * 1000);
+        AuthResponse authResponse = AuthResponse.builder()
+                .token(token)
+                .expiresIn(expirationTime)
+                .build();
         return ResponseEntity.ok(authResponse);
     }
 

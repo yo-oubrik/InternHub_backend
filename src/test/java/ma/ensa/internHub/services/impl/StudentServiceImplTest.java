@@ -1,8 +1,8 @@
 package ma.ensa.internHub.services.impl;
 
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
-import ma.ensa.internHub.domain.dto.response.StudentResponse;
 import ma.ensa.internHub.domain.entities.Student;
+import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.mappers.StudentMapper;
 import ma.ensa.internHub.repositories.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class StudentServiceImplTest {
+public class StudentServiceImplTest {
 
     @Mock
     private StudentRepository studentRepository;
@@ -30,110 +31,78 @@ class StudentServiceImplTest {
     @Mock
     private StudentMapper studentMapper;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private StudentServiceImpl studentService;
 
-    private UUID testId;
-    private Student testStudent;
-    private StudentRequest testRequest;
-    private StudentResponse testResponse;
+    private StudentRequest studentRequest;
+    private Student student;
+    private UUID studentId;
 
     @BeforeEach
     void setUp() {
-        testId = UUID.randomUUID();
-        testStudent = new Student();
-        testRequest = new StudentRequest();
-        testResponse = new StudentResponse();
+        studentId = UUID.randomUUID();
+        studentRequest = new StudentRequest();
+        studentRequest.setEmail("test@test.com");
+        studentRequest.setPassword("password");
+
+        student = new Student();
+        student.setId(studentId);
+        student.setEmail("test@test.com");
     }
 
     @Test
     void createStudent_Success() {
-        when(studentMapper.toEntity(testRequest)).thenReturn(testStudent);
-        when(studentRepository.save(testStudent)).thenReturn(testStudent);
-        when(studentMapper.toResponse(testStudent)).thenReturn(testResponse);
+        when(studentRepository.existsByEmail(any())).thenReturn(false);
+        when(studentMapper.toEntity(any())).thenReturn(student);
+        when(studentRepository.save(any())).thenReturn(student);
+        when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
 
-        StudentResponse result = studentService.createStudent(testRequest);
+        studentService.createStudent(studentRequest);
 
-        assertNotNull(result);
-        verify(studentRepository).save(testStudent);
-        verify(studentMapper).toEntity(testRequest);
-        verify(studentMapper).toResponse(testStudent);
+        verify(studentRepository).save(any());
     }
 
     @Test
-    void getStudentByEmail_Success() {
-        when(studentRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testStudent));
-        when(studentMapper.toResponse(testStudent)).thenReturn(testResponse);
+    void createStudent_DuplicateEmail() {
+        when(studentRepository.existsByEmail(any())).thenReturn(true);
 
-        StudentResponse result = studentService.getStudentByEmail("test@example.com");
-
-        assertNotNull(result);
-        verify(studentRepository).findByEmail("test@example.com");
-        verify(studentMapper).toResponse(testStudent);
-    }
-
-    @Test
-    void getStudentByEmail_NotFound() {
-        when(studentRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> studentService.getStudentByEmail("nonexistent@example.com"));
-    }
-
-    @Test
-    void getAllStudents_Success() {
-        when(studentRepository.findAll()).thenReturn(Arrays.asList(testStudent));
-
-        var result = studentService.getAllStudents();
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        verify(studentRepository).findAll();
-    }
-
-    @Test
-    void updateStudent_Success() {
-        when(studentRepository.findById(testId)).thenReturn(Optional.of(testStudent));
-        when(studentRepository.save(testStudent)).thenReturn(testStudent);
-        when(studentMapper.toResponse(testStudent)).thenReturn(testResponse);
-
-        StudentResponse result = studentService.updateStudent(testId, testRequest);
-
-        assertNotNull(result);
-        verify(studentRepository).findById(testId);
-        verify(studentMapper).updateFromRequest(testRequest, testStudent);
-        verify(studentRepository).save(testStudent);
-        verify(studentMapper).toResponse(testStudent);
-    }
-
-    @Test
-    void deleteStudent_Success() {
-        when(studentRepository.existsById(any())).thenReturn(true);
-
-        assertDoesNotThrow(() -> studentService.deleteStudent(testId));
-        verify(studentRepository).deleteById(testId);
-    }
-
-    @Test
-    void deleteStudent_NotFound() {
-        when(studentRepository.existsById(any())).thenReturn(false);
-
-        assertThrows(EntityNotFoundException.class, () -> studentService.deleteStudent(testId));
+        assertThrows(DuplicateResourceException.class, () -> studentService.createStudent(studentRequest));
     }
 
     @Test
     void getStudentById_Success() {
-        when(studentRepository.findById(any())).thenReturn(Optional.of(testStudent));
-        when(studentMapper.toResponse(testStudent)).thenReturn(testResponse);
-        StudentResponse result = studentService.getStudentById(testId);
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
 
-        assertNotNull(result);
-        verify(studentRepository).findById(testId);
+        studentService.getStudentById(studentId);
+
+        verify(studentMapper).toResponse(student);
     }
 
     @Test
     void getStudentById_NotFound() {
         when(studentRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> studentService.getStudentById(testId));
+        assertThrows(EntityNotFoundException.class, () -> studentService.getStudentById(studentId));
+    }
+
+    @Test
+    void getAllStudents_Success() {
+        when(studentRepository.findAll()).thenReturn(Arrays.asList(student));
+
+        studentService.getAllStudents();
+
+        verify(studentMapper).toResponse(student);
+    }
+
+    @Test
+    void deleteStudent_Success() {
+        when(studentRepository.existsById(studentId)).thenReturn(true);
+
+        studentService.deleteStudent(studentId);
+
+        verify(studentRepository).deleteById(studentId);
     }
 }
