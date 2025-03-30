@@ -1,5 +1,13 @@
 package ma.ensa.internHub.services.impl;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
@@ -9,13 +17,6 @@ import ma.ensa.internHub.exception.EmptyResourcesException;
 import ma.ensa.internHub.mappers.StudentMapper;
 import ma.ensa.internHub.repositories.StudentRepository;
 import ma.ensa.internHub.services.StudentService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import jakarta.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
