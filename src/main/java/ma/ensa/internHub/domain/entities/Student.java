@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 import ma.ensa.internHub.validation.ValidImageUrl;
 import ma.ensa.internHub.validation.ValidName;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -28,4 +30,6 @@ public class Student extends User {
     private String lastName;
     @ValidImageUrl
     private String profilePicture;
+
+
 }

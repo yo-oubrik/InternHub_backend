@@ -13,8 +13,7 @@ import ma.ensa.internHub.mappers.StudentMapper;
 import ma.ensa.internHub.repositories.StudentRepository;
 import ma.ensa.internHub.services.StudentService;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +52,27 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudentById(UUID id) {
         studentRepository.deleteById(id);
+    }
+
+
+    @Override
+    public Map<String, Long> countStudentsByMonth() {
+        List<Object[]> results = studentRepository.countStudentsByMonth();
+        Map<String, Long> studentCountByMonth = new LinkedHashMap<>();
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+        // Initialize the map with all months set to 0
+        for (String month : months) {
+            studentCountByMonth.put(month, 0L);
+        }
+
+        // Update the map with actual counts
+        for (Object[] result : results) {
+            int monthIndex = (int) result[0] - 1;
+            long count = (long) result[1];
+            studentCountByMonth.put(months[monthIndex], count);
+        }
+        return studentCountByMonth;
     }
 
 }
