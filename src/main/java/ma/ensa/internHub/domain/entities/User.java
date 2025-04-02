@@ -17,6 +17,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ma.ensa.internHub.validation.ValidImageUrl;
 
 @Entity
 @Data
@@ -38,4 +39,7 @@ public abstract class User extends BaseEntity implements Serializable {
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password should be at least 8 characters")
     private String password;
+
+    @ValidImageUrl
+    private String profilePicture;
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -33,14 +34,10 @@ public class Company extends User {
 
     @NotBlank(message = "ICE number is required")
     @Pattern(regexp = "^\\d{15}$", message = "ICE must be exactly 15 digits")
-    private String ice; // Changed from Long to String to preserve leading zeros
+    private String ice;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Internship> internships;
-    // @ValidImageUrl
-    // private String logo;
-
-    // size
-    // private String size;
-
+    @NotNull
+    Integer employeeCount;
 }

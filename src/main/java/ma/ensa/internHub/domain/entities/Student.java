@@ -28,8 +28,5 @@ public class Student extends User {
     @NotBlank(message = "Last name is required")
     @ValidName
     private String lastName;
-    @ValidImageUrl
-    private String profilePicture;
-
 
 }
