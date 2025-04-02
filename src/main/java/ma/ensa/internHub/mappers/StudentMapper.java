@@ -14,7 +14,7 @@ public interface StudentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")
-    @Mapping(target = "updatedAt", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "updatedAt", ignore = true)
     Student toEntity(StudentRequest request);
 
     StudentResponse toResponse(Student student);
