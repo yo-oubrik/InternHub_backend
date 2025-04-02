@@ -8,10 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ma.ensa.internHub.validation.ValidImageUrl;
 import ma.ensa.internHub.validation.ValidName;
-
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -29,4 +26,8 @@ public class Student extends User {
     @ValidName
     private String lastName;
 
+    @Override
+    public String getRole() {
+        return "STUDENT";
+    }
 }

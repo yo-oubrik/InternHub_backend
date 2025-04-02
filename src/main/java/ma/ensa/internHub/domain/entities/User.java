@@ -42,4 +42,6 @@ public abstract class User extends BaseEntity implements Serializable {
 
     @ValidImageUrl
     private String profilePicture;
+
+    public abstract String getRole();
 }

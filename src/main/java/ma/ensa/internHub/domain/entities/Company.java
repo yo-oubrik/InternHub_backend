@@ -7,7 +7,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -38,6 +37,9 @@ public class Company extends User {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Internship> internships;
-    @NotNull
-    Integer employeeCount;
+
+    @Override
+    public String getRole() {
+        return "COMPANY";
+    }
 }

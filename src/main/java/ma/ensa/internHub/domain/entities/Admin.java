@@ -23,4 +23,9 @@ public class Admin extends User {
     @NotBlank(message = "Last name is required")
     @ValidName
     private String lastName;
+
+    @Override
+    public String getRole() {
+        return "ADMIN";
+    }
 }
