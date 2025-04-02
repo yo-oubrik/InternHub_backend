@@ -13,8 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class BaseEntity {
-    @NotNull(message = "CreatedAt cannot be null")
+    @NotNull(message = "createdAt cannot be null")
     private LocalDateTime createdAt;
-    @NotNull(message = "UpdatedAt cannot be null")
     private LocalDateTime updatedAt;
 }
