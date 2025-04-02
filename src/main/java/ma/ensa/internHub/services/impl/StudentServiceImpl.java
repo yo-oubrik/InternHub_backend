@@ -27,7 +27,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse createStudent(StudentRequest request) {
-        if ( studentRepository.existsByEmail(request.getEmail())) {
+        if (studentRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateResourceException("Email already exists");
         }
 
@@ -37,7 +37,6 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.save(student);
         return studentMapper.toResponse(student);
     }
-
 
     @Override
     public long countStudents() {

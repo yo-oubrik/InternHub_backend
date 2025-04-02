@@ -18,6 +18,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.services.AuthService;
+import ma.ensa.internHub.domain.dto.response.AuthResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,18 @@ public class AuthServiceImpl implements AuthService {
     public UserDetails validateToken(String token) {
         String username = extractUsername(token);
         return userDetailsService.loadUserByUsername(username);
+    }
+
+    @Override
+    public AuthResponse createAuthResponse(UserDetails userDetails, String email) {
+        String token = generateToken(userDetails);
+        // Calculate expiration timestamp (current time + 24 hours in milliseconds)
+        long expirationTime = System.currentTimeMillis() + (86400 * 1000);
+
+        return AuthResponse.builder()
+                .token(token)
+                .expiresIn(expirationTime)
+                .build();
     }
 
     private Key getSigningKey() {

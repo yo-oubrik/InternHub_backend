@@ -30,13 +30,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         UserDetails userDetails = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-        String token = authService.generateToken(userDetails);
-        // Calculate expiration timestamp (current time + 24 hours in milliseconds)
-        long expirationTime = System.currentTimeMillis() + (86400 * 1000);
-        AuthResponse authResponse = AuthResponse.builder()
-                .token(token)
-                .expiresIn(expirationTime)
-                .build();
+        AuthResponse authResponse = authService.createAuthResponse(userDetails, loginRequest.getEmail());
         return ResponseEntity.ok(authResponse);
     }
 
