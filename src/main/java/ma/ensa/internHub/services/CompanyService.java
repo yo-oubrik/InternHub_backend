@@ -2,6 +2,7 @@ package ma.ensa.internHub.services;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
@@ -14,4 +15,6 @@ public interface CompanyService {
     long countCompanies();
 
     List<CompanyResponse> getAllCompanies();
+
+    void deleteCompanyById(UUID id);
 }

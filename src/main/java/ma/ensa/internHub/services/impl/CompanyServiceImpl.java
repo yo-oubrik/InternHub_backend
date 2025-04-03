@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,6 +68,11 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findAll().stream()
                 .map(companyMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteCompanyById(UUID id) {
+        companyRepository.deleteById(id);
     }
 
 }
