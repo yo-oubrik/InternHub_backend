@@ -19,4 +19,10 @@ public class CompanyController {
     public Map<String, Long> countCompaniesByMonth() {
         return companyService.countCompaniesByMonth();
     }
+
+    @GetMapping("/count")
+    public long countAllCompanies() {
+        return companyService.countCompanies();
+    }
+
 }

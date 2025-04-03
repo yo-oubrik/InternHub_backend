@@ -10,11 +10,5 @@ public interface CompanyService {
 
     Map<String, Long> countCompaniesByMonth();
 
-    // CompanyResponse updateCompany(UUID id, CompanyRequest request);
-
-    // void deleteCompany(UUID id);
-
-    // CompanyResponse getCompany(UUID id);
-
-    // List<CompanyResponse> getAllCompanies();
+    long countCompanies();
 }

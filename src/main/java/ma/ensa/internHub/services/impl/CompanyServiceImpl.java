@@ -12,12 +12,9 @@ import ma.ensa.internHub.services.CompanyService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +40,8 @@ public class CompanyServiceImpl implements CompanyService {
     public Map<String, Long> countCompaniesByMonth() {
         List<Object[]> results = companyRepository.countCompaniesByMonth();
         Map<String, Long> companyCountByMonth = new LinkedHashMap<>();
-        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September",
+                "October", "November", "December" };
 
         for (String month : months) {
             companyCountByMonth.put(month, 0L);
@@ -56,6 +54,11 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         return companyCountByMonth;
+    }
+
+    @Override
+    public long countCompanies() {
+        return companyRepository.count();
     }
 
 }
