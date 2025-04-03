@@ -20,9 +20,26 @@ import ma.ensa.internHub.security.UserDetailsServiceImpl;
 import ma.ensa.internHub.services.AuthService;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+    private static final String[] PUBLIC_SWAGGER_ENDPOINTS = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-resources/**",
+            "/webjars/**"
+    };
+
+    private static final String[] PUBLIC_API_ENDPOINTS = {
+            "/api/v1/auth/**",
+            "/api/v1/students/count",
+            "/api/v1/students/count-by-month",
+            "/api/v1/internships/count/**",
+            "/api/v1/companies/count",
+    };
+
     @Bean
     public JwtAuthFilter jwtAuthFilter(AuthService authService) {
         return new JwtAuthFilter(authService);
@@ -35,27 +52,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
-        http.cors(cors -> cors.configurationSource(request -> {
-            var corsConfiguration = new CorsConfiguration();
-            corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-            corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-            corsConfiguration.setAllowCredentials(true);
-            return corsConfiguration;
-        }))
+        http
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+                    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                    corsConfiguration.setAllowCredentials(true);
+                    return corsConfiguration;
+                }))
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/webjars/**")
-                        .permitAll()
-                        .requestMatchers("/api/v1/students/count").permitAll()
-<<<<<<< HEAD
-=======
-                        .requestMatchers("/api/v1/students/count-by-month").permitAll()
->>>>>>> 53f63ff (chore: permit all for count endpoints in security configuration)
-                        .requestMatchers("/api/v1/internships/count/**").permitAll()
-                        .requestMatchers("/api/v1/companies/count").permitAll()
+                        .requestMatchers(PUBLIC_SWAGGER_ENDPOINTS).permitAll()
+                        .requestMatchers(PUBLIC_API_ENDPOINTS).permitAll()
+
+                        // Secure everything else
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
