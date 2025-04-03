@@ -10,5 +10,5 @@ public interface AuthService {
 
     UserDetails validateToken(String token);
 
-    AuthResponse createAuthResponse(UserDetails userDetails, String email);
+    AuthResponse createAuthResponse(UserDetails userDetails);
 }

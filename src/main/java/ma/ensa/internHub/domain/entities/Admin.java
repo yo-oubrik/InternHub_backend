@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ma.ensa.internHub.domain.enums.Role;
 import ma.ensa.internHub.validation.ValidName;
 
 @Entity
@@ -25,7 +26,7 @@ public class Admin extends User {
     private String lastName;
 
     @Override
-    public String getRole() {
-        return "ADMIN";
+    public Role getRole() {
+        return Role.ADMIN;
     }
 }

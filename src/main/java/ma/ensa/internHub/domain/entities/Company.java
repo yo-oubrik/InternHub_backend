@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ma.ensa.internHub.domain.enums.Role;
 
 @Entity
 @Data
@@ -39,7 +40,7 @@ public class Company extends User {
     private List<Internship> internships;
 
     @Override
-    public String getRole() {
-        return "COMPANY";
+    public Role getRole() {
+        return Role.COMPANY;
     }
 }

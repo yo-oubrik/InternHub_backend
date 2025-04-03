@@ -17,6 +17,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ma.ensa.internHub.domain.enums.Role;
 import ma.ensa.internHub.validation.ValidImageUrl;
 
 @Entity
@@ -43,5 +44,5 @@ public abstract class User extends BaseEntity implements Serializable {
     @ValidImageUrl
     private String profilePicture;
 
-    public abstract String getRole();
+    public abstract Role getRole();
 }

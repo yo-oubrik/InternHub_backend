@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse createAuthResponse(UserDetails userDetails, String email) {
+    public AuthResponse createAuthResponse(UserDetails userDetails) {
         String token = generateToken(userDetails);
         // Calculate expiration timestamp (current time + 24 hours in milliseconds)
         long expirationTime = System.currentTimeMillis() + (86400 * 1000);
