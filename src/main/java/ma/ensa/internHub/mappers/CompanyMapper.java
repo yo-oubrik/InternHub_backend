@@ -23,8 +23,7 @@ public interface CompanyMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "internships", ignore = true)
-    @Mapping(target = "email", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", expression = "java(LocalDateTime.now())")
-    void updateFromRequest(CompanyRequest request, @MappingTarget Company student);
+    void updateFromRequest(CompanyRequest request, @MappingTarget Company company);
 }

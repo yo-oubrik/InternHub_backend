@@ -1,5 +1,6 @@
 package ma.ensa.internHub.domain.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -16,5 +17,6 @@ public class CompanyResponse {
     private String address;
     private String email;
     private String ice;
-    private String rc;
+    private LocalDateTime createdAt;
+    private String profilePicture;
 }

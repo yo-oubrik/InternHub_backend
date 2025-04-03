@@ -32,4 +32,5 @@ public class CompanyRequest {
     @NotBlank(message = "Password is required")
     @Size(message = "Password should be at least 8 characters", min = 8)
     private String password;
+    private String profilePicture;
 }
