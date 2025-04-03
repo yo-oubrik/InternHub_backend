@@ -49,9 +49,9 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**")
                         .permitAll()
-                        .requestMatchers("/api/v1/students/**").permitAll()
-                        .requestMatchers("/api/v1/internships/**").permitAll()
-                        .requestMatchers("/api/v1/companies/**").permitAll()
+                        .requestMatchers("/api/v1/students/count").permitAll()
+                        .requestMatchers("/api/v1/internships/count/**").permitAll()
+                        .requestMatchers("/api/v1/companies/count").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
