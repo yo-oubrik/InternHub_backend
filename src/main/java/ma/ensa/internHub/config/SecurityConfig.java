@@ -50,6 +50,10 @@ public class SecurityConfig {
                                 "/webjars/**")
                         .permitAll()
                         .requestMatchers("/api/v1/students/count").permitAll()
+<<<<<<< HEAD
+=======
+                        .requestMatchers("/api/v1/students/count-by-month").permitAll()
+>>>>>>> 53f63ff (chore: permit all for count endpoints in security configuration)
                         .requestMatchers("/api/v1/internships/count/**").permitAll()
                         .requestMatchers("/api/v1/companies/count").permitAll()
                         .anyRequest().authenticated())
