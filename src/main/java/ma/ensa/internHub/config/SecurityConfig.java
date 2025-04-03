@@ -1,5 +1,8 @@
 package ma.ensa.internHub.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,13 +17,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import ma.ensa.internHub.domain.enums.Role;
 import ma.ensa.internHub.repositories.UserRepository;
 import ma.ensa.internHub.security.JwtAuthFilter;
 import ma.ensa.internHub.security.UserDetailsServiceImpl;
 import ma.ensa.internHub.services.AuthService;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -36,8 +37,14 @@ public class SecurityConfig {
             "/api/v1/auth/**",
             "/api/v1/students/count",
             "/api/v1/students/count-by-month",
+            "/api/v1/companies/count-by-month",
             "/api/v1/internships/count/**",
             "/api/v1/companies/count",
+    };
+
+    private static final String[] ADMIN_ONLY_ENDPOINTS = {
+            "/api/v1/students",
+            "/api/v1/students/{id}"
     };
 
     @Bean
@@ -66,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                         .requestMatchers(PUBLIC_SWAGGER_ENDPOINTS).permitAll()
                         .requestMatchers(PUBLIC_API_ENDPOINTS).permitAll()
+                        .requestMatchers(ADMIN_ONLY_ENDPOINTS).hasRole(Role.ADMIN.name())
 
                         // Secure everything else
                         .anyRequest().authenticated())
