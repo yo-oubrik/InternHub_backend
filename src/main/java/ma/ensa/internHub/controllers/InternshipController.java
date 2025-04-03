@@ -1,6 +1,7 @@
 package ma.ensa.internHub.controllers;
 
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.entities.WorkMode;
 import ma.ensa.internHub.services.InternshipService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,16 +16,15 @@ public class InternshipController {
 
     @GetMapping("/count/remote")
     public long countRemoteInternships() {
-        return internshipService.countInternshipsByWorkMode("REMOTE");
+        return internshipService.countInternshipsByWorkMode(WorkMode.REMOTE);
     }
-
 
     @GetMapping("/count/on-site")
     public long countOnSiteInternships() {
-        return internshipService.countInternshipsByWorkMode("ON_SITE");
+        return internshipService.countInternshipsByWorkMode(WorkMode.ON_SITE);
     }
 
-    @GetMapping("/count/all")
+    @GetMapping("/count")
     public long countAllInternships() {
         return internshipService.countAllInternships();
     }

@@ -1,18 +1,17 @@
 package ma.ensa.internHub;
 
-import ma.ensa.internHub.domain.entities.*;
-import ma.ensa.internHub.repositories.StudentRepository;
+import java.time.LocalDateTime;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.entities.Company;
 import ma.ensa.internHub.repositories.CompanyRepository;
 import ma.ensa.internHub.repositories.InternshipRepository;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import ma.ensa.internHub.repositories.StudentRepository;
 
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class PfaProjectApplication {
 
     private final InternshipRepository internshipRepository;
     private final CompanyRepository companyRepository;
-    private final StudentRepository studentRepository ;
+    private final StudentRepository studentRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(PfaProjectApplication.class, args);
@@ -45,41 +44,40 @@ public class PfaProjectApplication {
         };
     }
 
-//    @Bean
-//    CommandLineRunner start() {
-//        return args -> {
-//            for(int i=0; i<10; i++){
-//                Student student = new Student();
-//                student.setFirstName("John");
-//                student.setLastName("Doe");
-//                student.setEmail("john.doe@example.com");
-//                student.setPassword("securePassword");
-////            student.setProfilePicture("http://example.com/profile.png"); // Valid URL format
-//
-//                student.setCreatedAt(LocalDateTime.now());
-//                student.setUpdatedAt(LocalDateTime.now());
-//                studentRepository.save(student);
-//            }
-//        };
-//    }
+    // @Bean
+    // CommandLineRunner start() {
+    // return args -> {
+    // for(int i=0; i<10; i++){
+    // Student student = new Student();
+    // student.setFirstName("John");
+    // student.setLastName("Doe");
+    // student.setEmail("john.doe@example.com");
+    // student.setPassword("securePassword");
+    //// student.setProfilePicture("http://example.com/profile.png"); // Valid URL
+    // format
+    //
+    // student.setCreatedAt(LocalDateTime.now());
+    // student.setUpdatedAt(LocalDateTime.now());
+    // studentRepository.save(student);
+    // }
+    // };
+    // }
 
-
-
-//    @Bean
-//    CommandLineRunner start() {
-//        return args -> {
-//            Student student = new Student();
-//            student.setFirstName("John");
-//            student.setLastName("Doe");
-//            student.setEmail("john.doe@example.com");
-//            student.setPassword("securePassword");
-//            student.setProfilePicture("http://example.com/profile.png");
-//            student.setEnrollmentDate(LocalDate.now());
-//            student.setCreatedAt(LocalDateTime.now());
-//            student.setUpdatedAt(LocalDateTime.now());
-//
-//            studentRepository.save(student);
-//
-//        };
-//    }
+    // @Bean
+    // CommandLineRunner start() {
+    // return args -> {
+    // Student student = new Student();
+    // student.setFirstName("John");
+    // student.setLastName("Doe");
+    // student.setEmail("john.doe@example.com");
+    // student.setPassword("securePassword");
+    // student.setProfilePicture("http://example.com/profile.png");
+    // student.setEnrollmentDate(LocalDate.now());
+    // student.setCreatedAt(LocalDateTime.now());
+    // student.setUpdatedAt(LocalDateTime.now());
+    //
+    // studentRepository.save(student);
+    //
+    // };
+    // }
 }

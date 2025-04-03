@@ -13,9 +13,8 @@ public class InternshipServiceImpl implements InternshipService {
     private final InternshipRepository internshipRepository;
 
     @Override
-    public long countInternshipsByWorkMode(String workMode) {
-        WorkMode mode = WorkMode.valueOf(workMode);
-        return internshipRepository.countByWorkMode(mode);
+    public long countInternshipsByWorkMode(WorkMode workMode) {
+        return internshipRepository.countByWorkMode(workMode);
     }
 
     @Override
