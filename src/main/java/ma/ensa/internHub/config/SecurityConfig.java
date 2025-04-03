@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/api/v1/students/**").permitAll()
                         .requestMatchers("/api/v1/internships/**").permitAll()
+                        .requestMatchers("/api/v1/companies/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

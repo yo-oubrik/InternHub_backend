@@ -12,11 +12,12 @@ import ma.ensa.internHub.services.CompanyService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityNotFoundException;
 
+
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,25 @@ public class CompanyServiceImpl implements CompanyService {
 
         companyRepository.save(company);
         return companyMapper.toResponse(company);
+    }
+
+    @Override
+    public Map<String, Long> countCompaniesByMonth() {
+        List<Object[]> results = companyRepository.countCompaniesByMonth();
+        Map<String, Long> companyCountByMonth = new LinkedHashMap<>();
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+        for (String month : months) {
+            companyCountByMonth.put(month, 0L);
+        }
+
+        for (Object[] result : results) {
+            int monthIndex = (int) result[0] - 1;
+            long count = (long) result[1];
+            companyCountByMonth.put(months[monthIndex], count);
+        }
+
+        return companyCountByMonth;
     }
 
 }
