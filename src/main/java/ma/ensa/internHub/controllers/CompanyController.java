@@ -1,12 +1,15 @@
 package ma.ensa.internHub.controllers;
 
-import lombok.RequiredArgsConstructor;
-import ma.ensa.internHub.services.CompanyService;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.dto.response.CompanyResponse;
+import ma.ensa.internHub.services.CompanyService;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -25,4 +28,8 @@ public class CompanyController {
         return companyService.countCompanies();
     }
 
+    @GetMapping
+    public List<CompanyResponse> getAllCompanies() {
+        return companyService.getAllCompanies();
+    }
 }

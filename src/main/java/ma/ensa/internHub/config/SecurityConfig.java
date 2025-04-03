@@ -44,7 +44,8 @@ public class SecurityConfig {
 
     private static final String[] ADMIN_ONLY_ENDPOINTS = {
             "/api/v1/students",
-            "/api/v1/students/{id}"
+            "/api/v1/companies",
+            "/api/v1/stu    dents/{id}"
     };
 
     @Bean

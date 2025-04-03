@@ -1,5 +1,6 @@
 package ma.ensa.internHub.services;
 
+import java.util.List;
 import java.util.Map;
 
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
@@ -11,4 +12,6 @@ public interface CompanyService {
     Map<String, Long> countCompaniesByMonth();
 
     long countCompanies();
+
+    List<CompanyResponse> getAllCompanies();
 }

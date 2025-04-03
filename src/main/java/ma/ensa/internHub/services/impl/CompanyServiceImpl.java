@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +60,13 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public long countCompanies() {
         return companyRepository.count();
+    }
+
+    @Override
+    public List<CompanyResponse> getAllCompanies() {
+        return companyRepository.findAll().stream()
+                .map(companyMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
 }
