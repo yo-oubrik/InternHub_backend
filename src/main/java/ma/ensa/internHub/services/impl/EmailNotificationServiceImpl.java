@@ -14,11 +14,9 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.ensa.internHub.exception.EmailSendingException;
 import ma.ensa.internHub.services.EmailNotificationService;
 
 @Service
@@ -45,7 +43,6 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
             javaMailSender.send(simpleMailMessage);
         } catch (Exception e) {
             log.error("Failed to send plain text email to {}: {}", to, e.getMessage());
-            throw new EmailSendingException("Failed to send email" + to);
         }
     }
 
@@ -67,9 +64,8 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
                 }
             }
             javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             log.error("Failed to send email with attachments to {}: {}", to, e.getMessage());
-            throw new EmailSendingException("Failed to send" + to);
         }
     }
 
@@ -102,7 +98,6 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             log.error("Failed to send HTML email with template to {}: {}", to, e.getMessage());
-            throw new EmailSendingException("Failed to send email to" + to);
         }
     }
 };

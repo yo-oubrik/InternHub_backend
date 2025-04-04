@@ -19,7 +19,6 @@ import ma.ensa.internHub.domain.dto.response.ApiErrorResponse;
 import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.exception.EmptyResourcesException;
 import ma.ensa.internHub.exception.ResourceNotFoundException;
-import ma.ensa.internHub.exception.EmailSendingException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -81,15 +80,6 @@ public class GlobalExceptionHandler {
                 ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
                                 "Resource not found", request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-        }
-
-        @ExceptionHandler(EmailSendingException.class)
-        public ResponseEntity<ApiErrorResponse> handleEmailSendingException(
-                        EmailSendingException ex,
-                        WebRequest request) {
-                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                                ex.getMessage(), request);
-                return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         @ExceptionHandler(Exception.class)

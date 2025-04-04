@@ -32,6 +32,7 @@ public class StudentServiceImpl implements StudentService {
         if (studentRepository.existsByEmail(studentMail)) {
             throw new DuplicateResourceException("Email already exists");
         }
+
         emailNotificationService.sendHtmlEmail(studentMail, "Welcome To InternHub", "welcome-student",
                 Map.of("studentName", request.getFirstName()), Map.of("logo.png", "/static/logo.png"));
         Student student = studentMapper.toEntity(request);
@@ -65,12 +66,10 @@ public class StudentServiceImpl implements StudentService {
         String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September",
                 "October", "November", "December" };
 
-        // Initialize the map with all months set to 0
         for (String month : months) {
             studentCountByMonth.put(month, 0L);
         }
 
-        // Update the map with actual counts
         for (Object[] result : results) {
             int monthIndex = (int) result[0] - 1;
             long count = (long) result[1];
