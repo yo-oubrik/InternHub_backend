@@ -11,6 +11,7 @@ import ma.ensa.internHub.domain.entities.Student;
 import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.mappers.StudentMapper;
 import ma.ensa.internHub.repositories.StudentRepository;
+import ma.ensa.internHub.services.EmailNotificationService;
 import ma.ensa.internHub.services.StudentService;
 
 import java.util.*;
@@ -23,13 +24,16 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailNotificationService emailNotificationService;
 
     @Override
     public StudentResponse createStudent(StudentRequest request) {
-        if (studentRepository.existsByEmail(request.getEmail())) {
+        String studentMail = request.getEmail();
+        if (studentRepository.existsByEmail(studentMail)) {
             throw new DuplicateResourceException("Email already exists");
         }
-
+        emailNotificationService.sendHtmlEmail(studentMail, "Welcome To InternHub", "welcome-student",
+                Map.of("studentName", request.getFirstName()), Map.of("logo.png", "/static/logo.png"));
         Student student = studentMapper.toEntity(request);
         student.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -54,12 +58,12 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.deleteById(id);
     }
 
-
     @Override
     public Map<String, Long> countStudentsByMonth() {
         List<Object[]> results = studentRepository.countStudentsByMonth();
         Map<String, Long> studentCountByMonth = new LinkedHashMap<>();
-        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September",
+                "October", "November", "December" };
 
         // Initialize the map with all months set to 0
         for (String month : months) {
