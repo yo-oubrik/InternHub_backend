@@ -1,9 +1,15 @@
 package ma.ensa.internHub.domain.entities;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -26,6 +32,14 @@ public class Student extends User {
     @NotBlank(message = "Last name is required")
     @ValidName
     private String lastName;
+
+    @OneToMany(mappedBy = "flaggedByStudent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CompanyFlag> companyFlagsMade = new ArrayList<>();
+
+    @OneToMany(mappedBy = "flaggedStudent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<StudentFlag> studentFlagsReceived = new ArrayList<>();
 
     @Override
     public Role getRole() {
