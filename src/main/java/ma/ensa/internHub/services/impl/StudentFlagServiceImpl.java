@@ -1,6 +1,7 @@
 package ma.ensa.internHub.services.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -25,4 +26,18 @@ public class StudentFlagServiceImpl implements StudentFlagService {
         return studentFlagRepository.findFlaggedStudentsOverviewByStatus(ReportStatus.UNRESOLVED);
     }
 
+    @Override
+    public long getUnresolvedStudentFlagsCountById(UUID id) {
+        return studentFlagRepository.countByFlaggedStudent_IdAndReportStatus(id, ReportStatus.UNRESOLVED);
+    }
+
+    @Override
+    public long getResolvedStudentFlagsCountById(UUID id) {
+        return studentFlagRepository.countByFlaggedStudent_IdAndReportStatus(id, ReportStatus.RESOLVED);
+    }
+
+    @Override
+    public long getStudentWarningsCount(UUID id) {
+        return studentFlagRepository.countByFlaggedStudent_IdAndReportStatus(id, ReportStatus.WARNED);
+    }
 }
