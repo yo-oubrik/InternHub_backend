@@ -1,5 +1,6 @@
 package ma.ensa.internHub.domain.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -9,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -38,6 +40,14 @@ public class Company extends User {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Internship> internships;
+
+    @OneToMany(mappedBy = "flaggedByCompany", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<StudentFlag> studentFlagsMade = new ArrayList<>();
+
+    @OneToMany(mappedBy = "flaggedCompany", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CompanyFlag> companyFlagsReceived = new ArrayList<>();
 
     @Override
     public Role getRole() {

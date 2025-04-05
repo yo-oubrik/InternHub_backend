@@ -30,7 +30,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui.html",
             "/swagger-resources/**",
-            "/webjars/**"
+            "/webjars/**",
     };
 
     private static final String[] PUBLIC_API_ENDPOINTS = {
@@ -46,7 +46,8 @@ public class SecurityConfig {
             "/api/v1/students",
             "/api/v1/companies",
             "/api/v1/students/{id}",
-            "/api/v1/companies/{id}"
+            "/api/v1/companies/{id}",
+            "/api/v1/company-flags/**"
     };
 
     @Bean
