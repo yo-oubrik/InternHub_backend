@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
+import ma.ensa.internHub.domain.dto.response.StudentFlagResponse;
 
 public interface StudentFlagService {
     long countUnresolvedStudentFlags();
@@ -12,7 +13,9 @@ public interface StudentFlagService {
 
     long getUnresolvedStudentFlagsCountById(UUID id);
 
-    long getResolvedStudentFlagsCountById(UUID id);
+    long getIgnoredFlagsCountByStudentId(UUID id);
 
     long getStudentWarningsCount(UUID id);
+
+    List<StudentFlagResponse> getStudentFlagsHistory();
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,7 @@ public abstract class AbstractFlag {
     private String description;
 
     @ElementCollection
+    @Size(max = 3, message = "Maximum 3 screenshots are allowed")
     private List<String> screenshots;
 
     @NotNull(message = "Status cannot be null")

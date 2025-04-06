@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
+import ma.ensa.internHub.domain.dto.response.StudentFlagResponse;
 import ma.ensa.internHub.services.StudentFlagService;
 
 @RestController
@@ -17,6 +18,11 @@ import ma.ensa.internHub.services.StudentFlagService;
 @RequiredArgsConstructor
 public class StudentFlagController {
     private final StudentFlagService studentFlagService;
+
+    @GetMapping("/{id}/flags")
+    public List<StudentFlagResponse> getStudentFlagsHistory() {
+        return studentFlagService.getStudentFlagsHistory();
+    }
 
     @GetMapping("/count")
     public long countUnresolvedStudentFlags() {
@@ -33,9 +39,9 @@ public class StudentFlagController {
         return studentFlagService.getUnresolvedStudentFlagsCountById(id);
     }
 
-    @GetMapping("/{id}/resolved/count")
+    @GetMapping("/{id}/ignored/count")
     public long getResolvedStudentFlagsCountById(@PathVariable UUID id) {
-        return studentFlagService.getResolvedStudentFlagsCountById(id);
+        return studentFlagService.getIgnoredFlagsCountByStudentId(id);
     }
 
     @GetMapping("/{id}/warnings/count")
