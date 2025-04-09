@@ -84,14 +84,11 @@ public class StudentServiceImpl implements StudentService {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         String currentEmail = authentication.getName();
-        StudentResponse currentStudent = this.getStudentByEmail(currentEmail);
-        if(currentStudent.getId().equals(id)) {
-            throw new BadRequestException("You can only update your own account");
-        }
-        Student student = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
-        studentMapper.updateFromRequest(request, student);
-        studentRepository.save(student);
-        return studentMapper.toResponse(student);
+        Student currentStudent = studentRepository.findByEmail(currentEmail).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        if(currentStudent.getId().equals(id)) throw new BadRequestException("You can only update your own account");
+        studentMapper.updateFromRequest(request, currentStudent);
+        studentRepository.save(currentStudent);
+        return studentMapper.toResponse(currentStudent);
     }
 
     @Override

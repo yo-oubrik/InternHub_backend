@@ -33,28 +33,6 @@ public class SecurityConfig {
             "/webjars/**",
     };
 
-    private static final String[] PUBLIC_API_ENDPOINTS = {
-            "/api/v1/auth/**",
-            "/api/v1/students/count",
-            "/api/v1/students/count-by-month",
-            "/api/v1/companies/count-by-month",
-            "/api/v1/internships/**",
-            "/api/v1/companies/count",
-    };
-
-    private static final String[] ADMIN_ONLY_ENDPOINTS = {
-            "/api/v1/students",
-            "/api/v1/companies",
-            "/api/v1/students/{id}",
-            "/api/v1/companies/{id}",
-            "/api/v1/company-flags/**"
-    };
-
-    private static final String[] STUDENT_ONLY_ENDPOINTS = {
-            "/api/v1/students/email/{email}",
-            "/api/v1/students/{id}"
-    };
-
     @Bean
     public JwtAuthFilter jwtAuthFilter(AuthService authService) {
         return new JwtAuthFilter(authService);
@@ -80,10 +58,15 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                         .requestMatchers(PUBLIC_SWAGGER_ENDPOINTS).permitAll()
-                        .requestMatchers(PUBLIC_API_ENDPOINTS).permitAll()
-                        .requestMatchers(ADMIN_ONLY_ENDPOINTS).hasRole(Role.ADMIN.name())
-                        .requestMatchers(STUDENT_ONLY_ENDPOINTS).hasRole(Role.STUDENT.name())
-
+                        .requestMatchers(HttpMethod.GET, "/api/v1/students/count").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/students/count-by-month").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/companies/count-by-month").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/companies/count").permitAll()
+                        // Admin endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/companies").hasRole(Role.ADMIN.name())
+                        // Student endpoints
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/students/{id}").hasRole(Role.STUDENT.name())
                         // Secure everything else
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
