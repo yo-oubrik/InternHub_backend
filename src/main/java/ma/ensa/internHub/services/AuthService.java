@@ -1,6 +1,8 @@
 package ma.ensa.internHub.services;
 
 import org.springframework.security.core.userdetails.UserDetails;
+
+import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.AuthResponse;
 
 public interface AuthService {
@@ -11,4 +13,8 @@ public interface AuthService {
     UserDetails validateToken(String token);
 
     AuthResponse createAuthResponse(UserDetails userDetails);
+
+    void initiateStudentVerification(StudentRequest request);
+
+    boolean isVerificationInitiated(String email);
 }

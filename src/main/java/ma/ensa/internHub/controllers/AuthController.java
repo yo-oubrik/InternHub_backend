@@ -1,15 +1,20 @@
 package ma.ensa.internHub.controllers;
 
+import java.util.Base64;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
+import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.LoginRequest;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.AuthResponse;
@@ -42,5 +47,23 @@ public class AuthController {
     @PostMapping("/register/companies")
     public ResponseEntity<CompanyResponse> registerCompany(@RequestBody @Valid CompanyRequest request) {
         return ResponseEntity.ok(companyService.createCompany(request));
+    }
+
+    @PostMapping("/verify-email/students")
+    public ResponseEntity<String> sendVerificationCode(@RequestBody @Valid StudentRequest request) {
+        authService.initiateStudentVerification(request);
+        return ResponseEntity.ok("Verification code sent to " + request.getEmail());
+    }
+
+    @PostMapping("/confirm/students")
+    public ResponseEntity<String> confirmStudentEmail(@RequestBody @Valid EmailVerificationRequest request) {
+        studentService.confirmAndRegisterStudent(request);
+        return ResponseEntity.ok("Email verified successfully");
+    }
+
+    @GetMapping("/verification-status/students")
+    public ResponseEntity<Boolean> checkVerificationStatus(@RequestParam String email) {
+        String decodedEmail = new String(Base64.getDecoder().decode(email));
+        return ResponseEntity.ok(authService.isVerificationInitiated(decodedEmail));
     }
 }

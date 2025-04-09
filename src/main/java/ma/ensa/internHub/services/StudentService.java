@@ -1,5 +1,6 @@
 package ma.ensa.internHub.services;
 
+import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
 
@@ -17,5 +18,7 @@ public interface StudentService {
     void deleteStudentById(UUID id);
 
     Map<String, Long> countStudentsByMonth();
+
+    StudentResponse confirmAndRegisterStudent(EmailVerificationRequest request);
 
 }

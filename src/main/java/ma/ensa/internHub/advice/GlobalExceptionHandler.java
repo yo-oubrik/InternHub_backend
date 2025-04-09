@@ -22,6 +22,8 @@ import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.exception.EmailSendingException;
 import ma.ensa.internHub.exception.EmptyResourcesException;
 import ma.ensa.internHub.exception.ResourceNotFoundException;
+import ma.ensa.internHub.exception.InvalidVerificationCodeException;
+import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -93,6 +95,25 @@ public class GlobalExceptionHandler {
                                 "Method not allowed", request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
         }
+
+        @ExceptionHandler(InvalidVerificationCodeException.class)
+        public ResponseEntity<ApiErrorResponse> handleInvalidVerificationCode(
+                        InvalidVerificationCodeException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(ExpiredVerificationCodeException.class)
+        public ResponseEntity<ApiErrorResponse> handleExpiredVerificationCode(
+                        ExpiredVerificationCodeException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
         @ExceptionHandler(EmailSendingException.class)
         public ResponseEntity<ApiErrorResponse> handleEmailSendingException(
                         EmailSendingException ex,
@@ -101,6 +122,7 @@ public class GlobalExceptionHandler {
                                 ex.getMessage(), request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.SERVICE_UNAVAILABLE);
         }
+
         @ExceptionHandler(EntityNotFoundException.class)
         public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(
                         EntityNotFoundException ex,
@@ -109,6 +131,7 @@ public class GlobalExceptionHandler {
                                 ex.getMessage(), request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
+
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ApiErrorResponse> handleGlobalException(
                         Exception ex,
