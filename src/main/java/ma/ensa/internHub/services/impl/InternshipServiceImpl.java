@@ -1,6 +1,7 @@
 package ma.ensa.internHub.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.entities.Internship;
 import ma.ensa.internHub.domain.entities.WorkMode;
 import ma.ensa.internHub.repositories.InternshipRepository;
 import ma.ensa.internHub.services.InternshipService;
@@ -20,6 +21,11 @@ public class InternshipServiceImpl implements InternshipService {
     @Override
     public long countAllInternships() {
         return internshipRepository.count();
+    }
+
+    @Override
+    public Internship saveInternship(Internship internship) {
+        return internshipRepository.save(internship);
     }
 
 }

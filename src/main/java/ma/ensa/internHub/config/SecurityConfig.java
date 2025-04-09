@@ -38,7 +38,7 @@ public class SecurityConfig {
             "/api/v1/students/count",
             "/api/v1/students/count-by-month",
             "/api/v1/companies/count-by-month",
-            "/api/v1/internships/count/**",
+            "/api/v1/internships/**",
             "/api/v1/companies/count",
     };
 
