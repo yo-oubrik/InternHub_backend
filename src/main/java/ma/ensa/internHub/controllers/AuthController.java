@@ -13,15 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.ensa.internHub.domain.dto.request.CompanyRequest;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.LoginRequest;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.AuthResponse;
-import ma.ensa.internHub.domain.dto.response.CompanyResponse;
-import ma.ensa.internHub.domain.dto.response.StudentResponse;
 import ma.ensa.internHub.services.AuthService;
-import ma.ensa.internHub.services.CompanyService;
 import ma.ensa.internHub.services.StudentService;
 
 @RestController
@@ -30,23 +26,12 @@ import ma.ensa.internHub.services.StudentService;
 public class AuthController {
     private final AuthService authService;
     private final StudentService studentService;
-    private final CompanyService companyService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         UserDetails userDetails = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         AuthResponse authResponse = authService.createAuthResponse(userDetails);
         return ResponseEntity.ok(authResponse);
-    }
-
-    @PostMapping("/register/students")
-    public ResponseEntity<StudentResponse> registerStudent(@RequestBody @Valid StudentRequest request) {
-        return ResponseEntity.ok(studentService.createStudent(request));
-    }
-
-    @PostMapping("/register/companies")
-    public ResponseEntity<CompanyResponse> registerCompany(@RequestBody @Valid CompanyRequest request) {
-        return ResponseEntity.ok(companyService.createCompany(request));
     }
 
     @PostMapping("/verify-email/students")
