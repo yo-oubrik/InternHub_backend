@@ -9,16 +9,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
 import ma.ensa.internHub.domain.dto.response.ApiErrorResponse;
 import ma.ensa.internHub.exception.DuplicateResourceException;
+import ma.ensa.internHub.exception.EmailSendingException;
 import ma.ensa.internHub.exception.EmptyResourcesException;
 import ma.ensa.internHub.exception.ResourceNotFoundException;
+import ma.ensa.internHub.exception.InvalidVerificationCodeException;
+import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -79,6 +84,51 @@ public class GlobalExceptionHandler {
                         WebRequest request) {
                 ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
                                 "Resource not found", request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+        public ResponseEntity<ApiErrorResponse> handleHttpRequestMethodNotSupported(
+                        HttpRequestMethodNotSupportedException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.METHOD_NOT_ALLOWED,
+                                "Method not allowed", request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+        }
+
+        @ExceptionHandler(InvalidVerificationCodeException.class)
+        public ResponseEntity<ApiErrorResponse> handleInvalidVerificationCode(
+                        InvalidVerificationCodeException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(ExpiredVerificationCodeException.class)
+        public ResponseEntity<ApiErrorResponse> handleExpiredVerificationCode(
+                        ExpiredVerificationCodeException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(EmailSendingException.class)
+        public ResponseEntity<ApiErrorResponse> handleEmailSendingException(
+                        EmailSendingException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.SERVICE_UNAVAILABLE,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+
+        @ExceptionHandler(EntityNotFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(
+                        EntityNotFoundException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
+                                ex.getMessage(), request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 

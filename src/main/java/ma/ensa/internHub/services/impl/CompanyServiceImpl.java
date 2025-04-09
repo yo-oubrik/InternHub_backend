@@ -16,6 +16,7 @@ import ma.ensa.internHub.domain.entities.Company;
 import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.mappers.CompanyMapper;
 import ma.ensa.internHub.repositories.CompanyRepository;
+import ma.ensa.internHub.repositories.UserRepository;
 import ma.ensa.internHub.services.CompanyService;
 import ma.ensa.internHub.services.EmailNotificationService;
 
@@ -23,6 +24,7 @@ import ma.ensa.internHub.services.EmailNotificationService;
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
     private final CompanyMapper companyMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailNotificationService emailNotificationService;
@@ -30,7 +32,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyResponse createCompany(CompanyRequest request) {
         String companyMail = request.getEmail();
-        if (companyRepository.existsByEmail(companyMail)) {
+        if (userRepository.existsByEmail(companyMail)) {
             throw new DuplicateResourceException("Email already exists");
         }
         emailNotificationService.sendHtmlEmail(companyMail, "Welcome To InternHub", "welcome-company",
