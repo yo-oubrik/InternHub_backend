@@ -1,16 +1,5 @@
-package ma.ensa.internHub.domain.entities;
+package ma.ensa.internHub.domain.dto.request;
 
-import java.util.List;
-import java.util.UUID;
-
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,20 +8,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ma.ensa.internHub.domain.entities.InternshipType;
+import ma.ensa.internHub.domain.entities.SalaryType;
+import ma.ensa.internHub.domain.entities.WorkMode;
 
-@Entity
+import java.util.List;
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Internship {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class InternshipRequest {
 
     @NotNull(message = "Company is required")
-    @ManyToOne
-    private Company company;
+    private UUID companyId;
 
     @NotBlank(message = "Description is required")
     @Size(min = 120, message = "Description should be at least 120 characters")
@@ -45,7 +35,6 @@ public class Internship {
     private double salary;
 
     @NotNull(message = "Salary type is required")
-    @Enumerated(EnumType.STRING)
     private SalaryType salaryType;
 
     @NotBlank(message = "Domain is required")
@@ -55,21 +44,16 @@ public class Internship {
     private String title;
 
     @NotNull(message = "Work mode is required")
-    @Enumerated(EnumType.STRING)
     private WorkMode workMode;
 
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
     private List<InternshipType> tags;
 
     @NotNull(message = "At least one skill must be specified")
     @Size(min = 1, message = "You must provide at least one skill")
-    @ElementCollection
-    private List< @NotBlank(message = "Skill cannot be blank") String> skills;
+    private List<@NotBlank(message = "Skill cannot be blank") String> skills;
 
-    @NotNull(message = "negotiable status is required")
-    private boolean negotiable;
-    private boolean paid;
+    @NotNull(message = "Negotiable status is required")
+    private Boolean negotiable;
 
-
+    private Boolean paid;
 }
