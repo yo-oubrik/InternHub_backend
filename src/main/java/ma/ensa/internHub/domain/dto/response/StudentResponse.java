@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ma.ensa.internHub.domain.entities.Links;
+import ma.ensa.internHub.domain.entities.Location;
 
 @Data
 @Builder
@@ -17,6 +19,16 @@ public class StudentResponse {
     private String firstName;
     private String lastName;
     private String email;
-    private String profilePicture;
     private LocalDateTime createdAt;
+    private String tel;
+    private String school;
+    private Location location;
+    private String profileTitle;
+    private String profilePicture;
+    private String profileDescription;
+    private Links links;
+    // private List<ExperienceResponse> experiences;
+    // private List<FormationResponse> formations;
+    // private List<ProjectResponse> projects;
+    // private List<CertificatResponse> certificates;
 }

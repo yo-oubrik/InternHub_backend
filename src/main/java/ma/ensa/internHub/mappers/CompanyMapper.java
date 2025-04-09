@@ -17,6 +17,8 @@ public interface CompanyMapper {
     @Mapping(target = "internships", ignore = true)
     @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "companyFlagsReceived", ignore = true)
+    @Mapping(target = "studentFlagsMade", ignore = true)
     Company toEntity(CompanyRequest request);
 
     CompanyResponse toResponse(Company company);
@@ -25,5 +27,7 @@ public interface CompanyMapper {
     @Mapping(target = "internships", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "companyFlagsReceived", ignore = true)
+    @Mapping(target = "studentFlagsMade", ignore = true)
     void updateFromRequest(CompanyRequest request, @MappingTarget Company company);
 }

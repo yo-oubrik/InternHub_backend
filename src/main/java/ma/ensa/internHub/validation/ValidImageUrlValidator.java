@@ -9,12 +9,12 @@ import java.util.Arrays;
 
 public class ValidImageUrlValidator implements ConstraintValidator<ValidImageUrl, String> {
     private String[] allowedExtensions;
-    private long maxFileSize;
+    // private long maxFileSize;
 
     @Override
     public void initialize(ValidImageUrl constraintAnnotation) {
         this.allowedExtensions = constraintAnnotation.allowedExtensions();
-        this.maxFileSize = constraintAnnotation.maxFileSize();
+        // this.maxFileSize = constraintAnnotation.maxFileSize();
     }
 
     @Override
@@ -39,8 +39,7 @@ public class ValidImageUrlValidator implements ConstraintValidator<ValidImageUrl
 
             return contentType != null &&
                     contentType.startsWith("image/") &&
-                    contentLength > 0 &&
-                    contentLength <= maxFileSize;
+                    contentLength > 0;
 
         } catch (Exception e) {
             return false;

@@ -15,6 +15,8 @@ public interface StudentMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "companyFlagsMade", ignore = true)
+    @Mapping(target = "studentFlagsReceived", ignore = true)
     Student toEntity(StudentRequest request);
 
     StudentResponse toResponse(Student student);
@@ -23,5 +25,7 @@ public interface StudentMapper {
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "companyFlagsMade", ignore = true)
+    @Mapping(target = "studentFlagsReceived", ignore = true)
     void updateFromRequest(StudentRequest request, @MappingTarget Student student);
 }

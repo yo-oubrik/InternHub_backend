@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ma.ensa.internHub.domain.enums.Role;
+import ma.ensa.internHub.validation.Phone;
 import ma.ensa.internHub.validation.ValidName;
 
 @Entity
@@ -32,6 +34,35 @@ public class Student extends User {
     @NotBlank(message = "Last name is required")
     @ValidName
     private String lastName;
+
+
+
+    private String school;
+
+    private String profileTitle;
+
+    @Phone
+    private String tel;
+
+    @Embedded
+    private Location location;
+
+    @Embedded
+    private Links links;
+
+    private String profileDescription;
+
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL)
+    // private List<Experience> experiences;
+
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL)
+    // private List<Formation> formations;
+
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL)
+    // private List<Project> projects;
+    
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL)
+    // private List<Certificat> certificates;
 
     @OneToMany(mappedBy = "flaggedByStudent", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

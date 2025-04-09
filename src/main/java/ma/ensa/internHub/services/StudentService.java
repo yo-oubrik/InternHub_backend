@@ -14,8 +14,8 @@ public interface StudentService {
     long countStudents();
 
     List<StudentResponse> getAllStudents();
-
-    void deleteStudentById(UUID id);
+    StudentResponse getStudentByEmail(String email);
+    StudentResponse updateStudentById(UUID id, StudentRequest request);
 
     Map<String, Long> countStudentsByMonth();
 

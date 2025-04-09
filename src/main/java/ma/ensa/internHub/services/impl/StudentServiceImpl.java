@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
 import ma.ensa.internHub.domain.entities.PendingStudent;
 import ma.ensa.internHub.domain.entities.Student;
+import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
 import ma.ensa.internHub.exception.InvalidVerificationCodeException;
@@ -69,8 +73,25 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudentById(UUID id) {
-        studentRepository.deleteById(id);
+    public StudentResponse getStudentByEmail(String email) {
+        Student student = studentRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        // includeAssociations(student);
+        return studentMapper.toResponse(student);
+    }
+
+    @Override
+    public StudentResponse updateStudentById(UUID id, StudentRequest request) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String currentEmail = authentication.getName();
+        StudentResponse currentStudent = this.getStudentByEmail(currentEmail);
+        if(currentStudent.getId().equals(id)) {
+            throw new BadRequestException("You can only update your own account");
+        }
+        Student student = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        studentMapper.updateFromRequest(request, student);
+        studentRepository.save(student);
+        return studentMapper.toResponse(student);
     }
 
     @Override
@@ -109,5 +130,16 @@ public class StudentServiceImpl implements StudentService {
 
         return studentMapper.toResponse(student);
     }
+
+    // private void includeAssociations(Student student) {
+    //     List<Experience> experiences = experienceRepository.findByStudentId(student.getId());
+    //     student.setExperiences(experiences);
+    //     List<Formation> formations = formationRepository.findByStudentId(student.getId());
+    //     student.setFormations(formations);
+        // List<Project> projects = projectRepository.findByStudentId(student.getId());
+    //     student.setProjects(projects);
+    //     List<Certificat> certificates = certificatRepository.findByStudentId(student.getId());
+    //     student.setCertificates(certificates);
+    // }
 
 }
