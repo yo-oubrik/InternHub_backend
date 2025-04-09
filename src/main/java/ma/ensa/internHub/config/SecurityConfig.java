@@ -50,6 +50,11 @@ public class SecurityConfig {
             "/api/v1/company-flags/**"
     };
 
+    private static final String[] STUDENT_ONLY_ENDPOINTS = {
+            "/api/v1/students/email/{email}",
+            "/api/v1/students/{id}"
+    };
+
     @Bean
     public JwtAuthFilter jwtAuthFilter(AuthService authService) {
         return new JwtAuthFilter(authService);
@@ -77,6 +82,7 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_SWAGGER_ENDPOINTS).permitAll()
                         .requestMatchers(PUBLIC_API_ENDPOINTS).permitAll()
                         .requestMatchers(ADMIN_ONLY_ENDPOINTS).hasRole(Role.ADMIN.name())
+                        .requestMatchers(STUDENT_ONLY_ENDPOINTS).hasRole(Role.STUDENT.name())
 
                         // Secure everything else
                         .anyRequest().authenticated())
