@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
 import ma.ensa.internHub.domain.dto.response.ApiErrorResponse;
 import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.exception.EmptyResourcesException;
@@ -90,6 +91,14 @@ public class GlobalExceptionHandler {
                 ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.METHOD_NOT_ALLOWED,
                                 "Method not allowed", request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        @ExceptionHandler(EntityNotFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(
+                        EntityNotFoundException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ApiErrorResponse> handleGlobalException(
