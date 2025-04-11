@@ -1,11 +1,22 @@
 package ma.ensa.internHub.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
+import ma.ensa.internHub.domain.dto.response.StudentResponse;
+import ma.ensa.internHub.domain.entities.PendingCompany;
+import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
+import ma.ensa.internHub.exception.InvalidVerificationCodeException;
+import ma.ensa.internHub.exception.ResourceNotFoundException;
+import ma.ensa.internHub.mappers.PendingCompanyMapper;
+import ma.ensa.internHub.repositories.PendingCompanyRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +39,8 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyMapper companyMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailNotificationService emailNotificationService;
+    private final PendingCompanyRepository pendingCompanyRepository;
+    private final PendingCompanyMapper pendingCompanyMapper;
 
     @Override
     public CompanyResponse createCompany(CompanyRequest request) {
@@ -79,6 +92,29 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public void deleteCompanyById(UUID id) {
         companyRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public CompanyResponse confirmAndRegisterCompany(EmailVerificationRequest request) {
+        PendingCompany pendingCompany = pendingCompanyRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("No pending verification found for this email"));
+
+        if (!pendingCompany.getConfirmationCode().equals(request.getVerificationCode())) {
+            throw new InvalidVerificationCodeException("Invalid confirmation code");
+        }
+
+        if (pendingCompany.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new ExpiredVerificationCodeException("Verification code has expired");
+        }
+
+        Company company = pendingCompanyMapper.convertToCompany(pendingCompany);
+
+
+        companyRepository.save(company);
+        pendingCompanyRepository.delete(pendingCompany);
+
+        return companyMapper.toResponse(company);
     }
 
 }
