@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/internships")
 @RequiredArgsConstructor
@@ -42,6 +45,31 @@ public class InternshipController {
         Internship savedInternship = internshipService.saveInternship(internship);
         InternshipResponse response = internshipMapper.toResponse(savedInternship);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InternshipResponse>> getAllInternships() {
+        List<Internship> internships = internshipService.getAllInternships();
+        List<InternshipResponse> responses = internships.stream()
+                .map(internshipMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<InternshipResponse> updateInternship(
+            @PathVariable UUID id,
+            @Valid @RequestBody InternshipRequest internshipRequest) {
+
+        Internship existingInternship = internshipService.getInternshipById(id);
+
+        internshipMapper.updateFromRequest(internshipRequest, existingInternship);
+
+        Internship updatedInternship = internshipService.saveInternship(existingInternship);
+
+        InternshipResponse response = internshipMapper.toResponse(updatedInternship);
+
+        return ResponseEntity.ok(response);
     }
 
 
