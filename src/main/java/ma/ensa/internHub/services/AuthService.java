@@ -1,5 +1,6 @@
 package ma.ensa.internHub.services;
 
+import ma.ensa.internHub.domain.dto.request.CompanyRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
@@ -17,4 +18,9 @@ public interface AuthService {
     void initiateStudentVerification(StudentRequest request);
 
     boolean isVerificationInitiated(String email);
+
+
+    void initiateCompanyVerification(CompanyRequest request);
+
+    boolean isCompanyVerificationInitiated(String email);
 }

@@ -6,6 +6,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import ma.ensa.internHub.domain.dto.request.CompanyRequest;
+import ma.ensa.internHub.domain.entities.PendingCompany;
+import ma.ensa.internHub.mappers.PendingCompanyMapper;
+import ma.ensa.internHub.repositories.PendingCompanyRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,10 +40,12 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final PendingStudentRepository pendingStudentRepository;
+    private final PendingCompanyRepository pendingCompanyRepository;
     private final EmailNotificationService emailService;
     private final PendingStudentMapper pendingStudentMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final PendingCompanyMapper pendingCompanyMapper;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -125,5 +131,46 @@ public class AuthServiceImpl implements AuthService {
     public boolean isVerificationInitiated(String email) {
         return pendingStudentRepository.existsByEmail(email);
     }
+
+    @Override
+    public void initiateCompanyVerification(CompanyRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("Email already exists");
+        }
+
+        if (pendingCompanyRepository.existsByEmail(request.getEmail())) {
+            PendingCompany pendingCompany = pendingCompanyRepository.findByEmail(request.getEmail()).get();
+            if (pendingCompany.getExpiryDate().isAfter(LocalDateTime.now())) {
+                throw new DuplicateResourceException(
+                        "Verification code already sent, please wait for 5 minutes before trying again");
+            }
+        }
+
+        PendingCompany pendingCompany = pendingCompanyMapper.convertToPendingCompany(request);
+        pendingCompany.setPassword(passwordEncoder.encode(request.getPassword()));
+        String confirmationCode = VerificationCodeGenerator.generateVerificationCode();
+        pendingCompany.setConfirmationCode(confirmationCode);
+        pendingCompanyRepository.save(pendingCompany);
+
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("companyName", request.getName());
+        templateModel.put("confirmationCode", confirmationCode);
+
+        Map<String, String> inlineResources = new HashMap<>();
+        inlineResources.put("logo.png", "/static/logo.png");
+
+        emailService.sendHtmlEmail(
+                request.getEmail(),
+                "InternHub - Email Confirmation Code",
+                "confirmation-code-company",
+                templateModel,
+                inlineResources);
+    }
+
+    @Override
+    public boolean isCompanyVerificationInitiated(String email) {
+        return pendingCompanyRepository.existsByEmail(email);
+    }
+
 
 }
