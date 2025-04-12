@@ -10,6 +10,6 @@ public class ValidNameValidator implements ConstraintValidator<ValidName, String
         if (name == null) {
             return false;
         }
-        return name.matches("^[A-Za-z]{2,50}$");
+        return name.matches("^[A-Za-z\\s]{2,50}$");
     }
 }

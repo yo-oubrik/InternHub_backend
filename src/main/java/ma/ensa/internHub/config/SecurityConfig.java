@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/students/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/internships/company/{id}").permitAll()
                         // Admin endpoints
                         .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies").hasRole(Role.ADMIN.name())
