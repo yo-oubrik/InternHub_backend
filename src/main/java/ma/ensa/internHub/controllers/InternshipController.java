@@ -40,45 +40,38 @@ public class InternshipController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<InternshipResponse> createInternship(@Valid @RequestBody InternshipRequest internshipRequest) {
-        Internship internship = internshipMapper.toEntity(internshipRequest);
-        Internship savedInternship = internshipService.saveInternship(internship);
-        InternshipResponse response = internshipMapper.toResponse(savedInternship);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<InternshipResponse> createInternship(@Valid @RequestBody InternshipRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(internshipService.saveInternship(request));
     }
 
-    @GetMapping
+    @GetMapping("/allInternships")
     public ResponseEntity<List<InternshipResponse>> getAllInternships() {
-        List<Internship> internships = internshipService.getAllInternships();
-        List<InternshipResponse> responses = internships.stream()
-                .map(internshipMapper::toResponse)
-                .toList();
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(internshipService.getAllInternships());
+    }
+    @GetMapping("/InternshipByID/{id}")
+    public ResponseEntity<InternshipResponse> getInternshipById(@PathVariable UUID id) {
+        return ResponseEntity.ok(internshipService.getInternshipById(id));
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/internshipsByCompany/{companyId}")
+    public ResponseEntity<List<InternshipResponse>> getInternshipsByCompany(@PathVariable UUID companyId) {
+        return ResponseEntity.ok(internshipService.getInternshipsByCompanyId(companyId));
+    }
+
+    @PutMapping("/update/{id}")
     public ResponseEntity<InternshipResponse> updateInternship(
             @PathVariable UUID id,
-            @Valid @RequestBody InternshipRequest internshipRequest) {
-
-        Internship existingInternship = internshipService.getInternshipById(id);
-
-        internshipMapper.updateFromRequest(internshipRequest, existingInternship);
-
-        Internship updatedInternship = internshipService.saveInternship(existingInternship);
-
-        InternshipResponse response = internshipMapper.toResponse(updatedInternship);
-
-        return ResponseEntity.ok(response);
+            @Valid @RequestBody InternshipRequest request) {
+        return ResponseEntity.ok(internshipService.updateInternship(id, request));
     }
 
-    @GetMapping("/company/{companyId}")
-    public ResponseEntity<List<InternshipResponse>> getCompanyInternships(@PathVariable UUID companyId) {
-        List<Internship> internships = internshipService.getInternshipsByCompanyId(companyId);
-        List<InternshipResponse> responses = internships.stream()
-                .map(internshipMapper::toResponse)
-                .toList();
-        return ResponseEntity.ok(responses);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteInternship(@PathVariable UUID id) {
+        internshipService.deleteInternship(id);
+        return ResponseEntity.noContent().build();
     }
+
+
 
 }

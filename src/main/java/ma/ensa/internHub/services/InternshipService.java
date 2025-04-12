@@ -1,5 +1,7 @@
 package ma.ensa.internHub.services;
 
+import ma.ensa.internHub.domain.dto.request.InternshipRequest;
+import ma.ensa.internHub.domain.dto.response.InternshipResponse;
 import ma.ensa.internHub.domain.entities.Internship;
 import ma.ensa.internHub.domain.entities.WorkMode;
 
@@ -14,12 +16,10 @@ public interface InternshipService {
 
     long countAllInternships();
 
-    Internship saveInternship(Internship internship);
-
-    List<Internship> getAllInternships();
-
-    Internship getInternshipById(UUID id);
-
-    List<Internship> getInternshipsByCompanyId(UUID companyId);
-
+    InternshipResponse saveInternship(InternshipRequest request);
+    List<InternshipResponse> getAllInternships();
+    InternshipResponse getInternshipById(UUID id);
+    List<InternshipResponse> getInternshipsByCompanyId(UUID companyId);
+    InternshipResponse updateInternship(UUID id, InternshipRequest request);
+    void deleteInternship(UUID id);
 }
