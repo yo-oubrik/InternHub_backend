@@ -72,5 +72,13 @@ public class InternshipController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<List<InternshipResponse>> getCompanyInternships(@PathVariable UUID companyId) {
+        List<Internship> internships = internshipService.getInternshipsByCompanyId(companyId);
+        List<InternshipResponse> responses = internships.stream()
+                .map(internshipMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
+    }
 
 }
