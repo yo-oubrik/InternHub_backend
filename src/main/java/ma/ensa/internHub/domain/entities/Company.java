@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
@@ -48,6 +49,9 @@ public class Company extends User {
     @OneToMany(mappedBy = "flaggedCompany", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CompanyFlag> companyFlagsReceived = new ArrayList<>();
+
+    @Embedded
+    private Links links;
 
     @Override
     public Role getRole() {

@@ -6,6 +6,7 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ma.ensa.internHub.domain.entities.Links;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +20,5 @@ public class CompanyResponse {
     private String ice;
     private LocalDateTime createdAt;
     private String profilePicture;
+    private Links links ;
 }

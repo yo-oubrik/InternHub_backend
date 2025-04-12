@@ -5,12 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ma.ensa.internHub.domain.entities.Links;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CompanyRequest {
     @NotBlank(message = "Company name is required")
     private String name;
@@ -33,4 +36,6 @@ public class CompanyRequest {
     @Size(message = "Password should be at least 8 characters", min = 8)
     private String password;
     private String profilePicture;
+
+    private Links links;
 }
