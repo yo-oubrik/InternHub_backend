@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import ma.ensa.internHub.validation.ValidGithubUrl;
 import ma.ensa.internHub.validation.ValidLinkedInUrl;
 
@@ -11,6 +12,7 @@ import ma.ensa.internHub.validation.ValidLinkedInUrl;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Links {
     @ValidGithubUrl
     private String github;
