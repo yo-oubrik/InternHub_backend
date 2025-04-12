@@ -20,5 +20,6 @@ public interface InternshipService {
 
     Internship getInternshipById(UUID id);
 
+    List<Internship> getInternshipsByCompanyId(UUID companyId);
 
 }

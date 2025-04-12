@@ -43,4 +43,10 @@ InternshipServiceImpl implements InternshipService {
                 .orElseThrow(() -> new ResourceNotFoundException("Internship not found with id: " + id));
     }
 
+    @Override
+    public List<Internship> getInternshipsByCompanyId(UUID companyId) {
+        return internshipRepository.findByCompanyId(companyId);
+    }
+
+
 }
