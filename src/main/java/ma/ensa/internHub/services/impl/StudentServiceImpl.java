@@ -73,6 +73,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public StudentResponse getStudentById(UUID id) {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        return studentMapper.toResponse(student);
+    }
+
+    @Override
     public StudentResponse getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Student not found"));
         // includeAssociations(student);

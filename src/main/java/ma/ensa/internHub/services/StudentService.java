@@ -14,6 +14,7 @@ public interface StudentService {
     long countStudents();
 
     List<StudentResponse> getAllStudents();
+    StudentResponse getStudentById(UUID id);
     StudentResponse getStudentByEmail(String email);
     StudentResponse updateStudentById(UUID id, StudentRequest request);
 
