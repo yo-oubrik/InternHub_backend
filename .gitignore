@@ -37,3 +37,6 @@ src/main/java/ma/ensa/internHub/PfaProjectApplication.java
 
 # Ignore personal mail config
 src/main/resources/application-dev.properties
+
+# Ignore docker dev
+docker-compose-dev.yml
