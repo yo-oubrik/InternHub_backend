@@ -56,13 +56,16 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(PUBLIC_SWAGGER_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/students/count").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/students/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/company/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/internships/count").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/internships/count/remote").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/internships/count/on-site").permitAll()
                         // Admin endpoints
                         .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies").hasRole(Role.ADMIN.name())
