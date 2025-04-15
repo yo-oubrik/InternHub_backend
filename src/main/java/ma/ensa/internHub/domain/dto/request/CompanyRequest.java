@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ensa.internHub.domain.entities.Links;
+import ma.ensa.internHub.validation.ValidImageUrl;
 
 @Data
 @NoArgsConstructor
@@ -35,6 +36,7 @@ public class CompanyRequest {
     @NotBlank(message = "Password is required")
     @Size(message = "Password should be at least 8 characters", min = 8)
     private String password;
+    @ValidImageUrl
     private String profilePicture;
 
     private Links links;

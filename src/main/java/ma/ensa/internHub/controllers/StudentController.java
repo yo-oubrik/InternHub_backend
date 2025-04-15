@@ -28,6 +28,11 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable UUID id) {
+        return ResponseEntity.ok(studentService.getStudentById(id));
+    }
+
     @GetMapping("/email/{email}")
     public ResponseEntity<StudentResponse> getStudentByEmail(@PathVariable String email) {
         return ResponseEntity.ok(studentService.getStudentByEmail(email));

@@ -73,6 +73,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public StudentResponse getStudentById(UUID id) {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        return studentMapper.toResponse(student);
+    }
+
+    @Override
     public StudentResponse getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Student not found"));
         // includeAssociations(student);
@@ -110,6 +116,7 @@ public class StudentServiceImpl implements StudentService {
         return studentCountByMonth;
     }
 
+    @Override
     public StudentResponse confirmAndRegisterStudent(EmailVerificationRequest request) {
         PendingStudent pending = pendingStudentRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("No verification request found"));
