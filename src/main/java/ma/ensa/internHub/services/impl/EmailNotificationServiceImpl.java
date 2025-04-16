@@ -1,8 +1,12 @@
 package ma.ensa.internHub.services.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +15,14 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
 import ma.ensa.internHub.exception.EmailSendingException;
 import ma.ensa.internHub.services.EmailNotificationService;
 
@@ -102,6 +108,51 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         } catch (Exception e) {
             log.error("Failed to send HTML email with template to {}: {}", to, e.getMessage());
             throw new EmailSendingException("Failed to send email to " + to);
+        }
+    }
+
+    @Override
+    public void sendDynamicEmailWithMultipartAttachments(EmailWithAttachmentsRequest emailWithAttachmentsDto) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            messageHelper.setFrom(sender);
+            messageHelper.setTo(emailWithAttachmentsDto.getTo());
+            messageHelper.setSubject(emailWithAttachmentsDto.getSubject());
+
+            Context context = new Context();
+            context.setVariable("recepientName", emailWithAttachmentsDto.getRecepientName());
+            context.setVariable("subject", emailWithAttachmentsDto.getSubject());
+            context.setVariable("body", emailWithAttachmentsDto.getHtmlBody());
+
+            String htmlContent = templateEngine.process("dynamic-mail", context);
+            messageHelper.setText(htmlContent, true);
+            MultipartFile[] attachments = emailWithAttachmentsDto.getAttachments();
+            if (attachments != null && attachments.length > 0) {
+                for (MultipartFile attachment : attachments) {
+                    if (!attachment.isEmpty()) {
+                        try {
+                            String fileName = attachment.getOriginalFilename();
+                            Path tempFile = Files.createTempFile(UUID.randomUUID().toString(), fileName);
+                            attachment.transferTo(tempFile.toFile());
+
+                            messageHelper.addAttachment(fileName, tempFile.toFile());
+
+                            tempFile.toFile().deleteOnExit();
+                        } catch (IOException e) {
+                            log.error("Failed to process attachment {}: {}", attachment.getOriginalFilename(),
+                                    e.getMessage());
+                        }
+                    }
+                }
+            }
+
+            javaMailSender.send(mimeMessage);
+        } catch (Exception e) {
+            log.error("Failed to send dynamic HTML email with attachments to {}: {}", emailWithAttachmentsDto.getTo(),
+                    e.getMessage());
+            throw new EmailSendingException(
+                    "Failed to send dynamic email with attachments to " + emailWithAttachmentsDto.getTo());
         }
     }
 }

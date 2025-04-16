@@ -39,9 +39,8 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Override
     @Transactional
     public void generateAndSendResetToken(String email) {
-        userRepository.findByEmail(email)
+       User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
-
         String token = VerificationCodeGenerator.generateVerificationCode();
         LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(TOKEN_EXPIRY_MINUTES);
 
@@ -52,7 +51,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("resetLink", resetLink);
-        templateModel.put("userName", "User");
+        templateModel.put("userName",user.getName());
 
         emailNotificationService.sendHtmlEmail(
                 email,
