@@ -116,15 +116,12 @@ public class AuthServiceImpl implements AuthService {
         templateModel.put("studentName", request.getFirstName() + " " + request.getLastName());
         templateModel.put("confirmationCode", confirmationCode);
 
-        Map<String, String> inlineResources = new HashMap<>();
-        inlineResources.put("logo.png", "/static/logo.png");
-
         emailService.sendHtmlEmail(
                 request.getEmail(),
                 "InternHub - Email Confirmation Code",
                 "confirmation-code",
                 templateModel,
-                inlineResources);
+                null);
     }
 
     @Override
@@ -156,21 +153,17 @@ public class AuthServiceImpl implements AuthService {
         templateModel.put("companyName", request.getName());
         templateModel.put("confirmationCode", confirmationCode);
 
-        Map<String, String> inlineResources = new HashMap<>();
-        inlineResources.put("logo.png", "/static/logo.png");
-
         emailService.sendHtmlEmail(
                 request.getEmail(),
                 "InternHub - Email Confirmation Code",
                 "confirmation-code-company",
                 templateModel,
-                inlineResources);
+                null);
     }
 
     @Override
     public boolean isCompanyVerificationInitiated(String email) {
         return pendingCompanyRepository.existsByEmail(email);
     }
-
 
 }

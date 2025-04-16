@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to InternHub</title>
 </head>
 <body style="background-color: white; margin: 0; font-family: sans-serif;">
   <div style="max-width: 32rem; margin: 0 auto; background-color: white; ">
@@ -13,13 +12,12 @@
     </div>
     
     <div style="color: #ff5a31; text-align: center; padding: 1rem; font-size: 1.25rem; font-weight: 600; border-radius: 0.5rem;">
-      Welcome to InternHub!
+      <span th:text="${subject}"></span>
     </div>
     
     <div style="margin-top: 1.5rem; color: #374151; font-size: 1rem;">
-      <p>Dear <strong th:text="${companyName}">Company Name</strong>,</p>
-      <p style="margin-top: 0.5rem;">Thank you for registering with <strong style="color: #ff8566;">InternHub</strong>, the platform connecting Moroccan companies with talented students seeking internships.</p>
-      <p style="margin-top: 0.5rem;">We're excited to have you on board and look forward to helping you discover passionate young talent from across Morocco.</p>
+      <p>Dear <strong th:text="${recepientName}"></strong>,</p>
+      <div th:utext="${body}"></div>
       <p style="margin-top: 0.5rem;">If you have any questions, feel free to reach out to our team at <a href="mailto:internhub@gmail.com" style="color: #3b82f6; text-decoration: none;">internhub@gmail.com</a>.</p>
     </div>
     

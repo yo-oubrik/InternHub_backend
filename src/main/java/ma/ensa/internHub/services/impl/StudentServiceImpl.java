@@ -52,7 +52,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         emailNotificationService.sendHtmlEmail(studentMail, "Welcome To InternHub", "welcome-student",
-                Map.of("studentName", request.getFirstName()), Map.of("logo.png", "/static/logo.png"));
+                Map.of("studentName", request.getFirstName()), null);
         Student student = studentMapper.toEntity(request);
         student.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -74,13 +74,15 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse getStudentById(UUID id) {
-        Student student = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
         return studentMapper.toResponse(student);
     }
 
     @Override
     public StudentResponse getStudentByEmail(String email) {
-        Student student = studentRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
         // includeAssociations(student);
         return studentMapper.toResponse(student);
     }
@@ -90,8 +92,10 @@ public class StudentServiceImpl implements StudentService {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         String currentEmail = authentication.getName();
-        Student currentStudent = studentRepository.findByEmail(currentEmail).orElseThrow(() -> new EntityNotFoundException("Student not found"));
-        if(currentStudent.getId().equals(id)) throw new BadRequestException("You can only update your own account");
+        Student currentStudent = studentRepository.findByEmail(currentEmail)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        if (currentStudent.getId().equals(id))
+            throw new BadRequestException("You can only update your own account");
         studentMapper.updateFromRequest(request, currentStudent);
         studentRepository.save(currentStudent);
         return studentMapper.toResponse(currentStudent);
@@ -136,14 +140,17 @@ public class StudentServiceImpl implements StudentService {
     }
 
     // private void includeAssociations(Student student) {
-    //     List<Experience> experiences = experienceRepository.findByStudentId(student.getId());
-    //     student.setExperiences(experiences);
-    //     List<Formation> formations = formationRepository.findByStudentId(student.getId());
-    //     student.setFormations(formations);
-        // List<Project> projects = projectRepository.findByStudentId(student.getId());
-    //     student.setProjects(projects);
-    //     List<Certificat> certificates = certificatRepository.findByStudentId(student.getId());
-    //     student.setCertificates(certificates);
+    // List<Experience> experiences =
+    // experienceRepository.findByStudentId(student.getId());
+    // student.setExperiences(experiences);
+    // List<Formation> formations =
+    // formationRepository.findByStudentId(student.getId());
+    // student.setFormations(formations);
+    // List<Project> projects = projectRepository.findByStudentId(student.getId());
+    // student.setProjects(projects);
+    // List<Certificat> certificates =
+    // certificatRepository.findByStudentId(student.getId());
+    // student.setCertificates(certificates);
     // }
 
 }

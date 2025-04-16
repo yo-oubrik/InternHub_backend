@@ -7,26 +7,24 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
-import ma.ensa.internHub.domain.dto.response.StudentResponse;
-import ma.ensa.internHub.domain.entities.PendingCompany;
-import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
-import ma.ensa.internHub.exception.InvalidVerificationCodeException;
-import ma.ensa.internHub.exception.ResourceNotFoundException;
-import ma.ensa.internHub.mappers.PendingCompanyMapper;
-import ma.ensa.internHub.repositories.PendingCompanyRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
+import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.domain.entities.Company;
+import ma.ensa.internHub.domain.entities.PendingCompany;
 import ma.ensa.internHub.exception.DuplicateResourceException;
+import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
+import ma.ensa.internHub.exception.InvalidVerificationCodeException;
 import ma.ensa.internHub.mappers.CompanyMapper;
+import ma.ensa.internHub.mappers.PendingCompanyMapper;
 import ma.ensa.internHub.repositories.CompanyRepository;
+import ma.ensa.internHub.repositories.PendingCompanyRepository;
 import ma.ensa.internHub.repositories.UserRepository;
 import ma.ensa.internHub.services.CompanyService;
 import ma.ensa.internHub.services.EmailNotificationService;
@@ -49,7 +47,7 @@ public class CompanyServiceImpl implements CompanyService {
             throw new DuplicateResourceException("Email already exists");
         }
         emailNotificationService.sendHtmlEmail(companyMail, "Welcome To InternHub", "welcome-company",
-                Map.of("companyName", request.getName()), Map.of("logo.png", "/static/logo.png"));
+                Map.of("companyName", request.getName()), null);
         Company company = companyMapper.toEntity(request);
         company.setPassword(passwordEncoder.encode(request.getPassword()));
         companyRepository.save(company);
@@ -109,7 +107,6 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         Company company = pendingCompanyMapper.convertToCompany(pendingCompany);
-
 
         companyRepository.save(company);
         pendingCompanyRepository.delete(pendingCompany);
