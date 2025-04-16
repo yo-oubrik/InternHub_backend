@@ -45,4 +45,5 @@ public abstract class User extends BaseEntity implements Serializable {
     private String profilePicture;
 
     public abstract Role getRole();
+    public abstract String getName();
 }

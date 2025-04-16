@@ -76,4 +76,9 @@ public class Student extends User {
     public Role getRole() {
         return Role.STUDENT;
     }
+
+    @Override
+    public String getName() {
+     return firstName + " " + lastName;
+    }
 }

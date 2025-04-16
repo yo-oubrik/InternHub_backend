@@ -29,4 +29,10 @@ public class Admin extends User {
     public Role getRole() {
         return Role.ADMIN;
     }
+
+    @Override
+    public String getName() {
+      return firstName + " " + lastName;
+    }
+    
 }

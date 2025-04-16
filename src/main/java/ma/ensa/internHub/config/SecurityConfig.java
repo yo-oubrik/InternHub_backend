@@ -66,6 +66,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/count").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/count/remote").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/v1/internships/count/on-site").permitAll()
+                        .requestMatchers("/api/v1/password-reset/**").permitAll()
                         // Admin endpoints
                         .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies").hasRole(Role.ADMIN.name())
