@@ -8,18 +8,16 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = CompanyMapper.class)
 public interface InternshipMapper {
 
-    // Request DTO to Entity
-    @Mapping(target = "id", ignore = true) // ID is generated
-    @Mapping(target = "company.id", source = "request.companyId") // Map company ID to company entit
+    @Mapping(target = "id", ignore = true)
     Internship toEntity(InternshipRequest request);
 
-    // Entity to Response DTO
+
     @Mapping(target = "companyResponse", ignore = true)
     InternshipResponse toResponse(Internship internship);
 
-    //Update existing entity from Request DTO
-    @Mapping(target = "id", ignore = true) // ID should not be updated
-    @Mapping(target = "company", ignore = true) // Company is managed separately
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "company", ignore = true)
     void updateFromRequest(InternshipRequest request, @MappingTarget Internship internship);
 
 }
