@@ -31,7 +31,6 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/swagger-resources/**",
             "/webjars/**",
-            "/api/v1/emails/**"
     };
 
     @Bean

@@ -1,19 +1,20 @@
 package ma.ensa.internHub.services.impl;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
-import ma.ensa.internHub.exception.InvalidVerificationCodeException;
-import ma.ensa.internHub.utils.VerificationCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.ensa.internHub.domain.entities.PasswordResetToken;
 import ma.ensa.internHub.domain.entities.User;
+import ma.ensa.internHub.exception.InvalidVerificationCodeException;
 import ma.ensa.internHub.exception.ResourceNotFoundException;
+import ma.ensa.internHub.exception.TokenAlreadySentException;
 import ma.ensa.internHub.repositories.PasswordResetTokenRepository;
 import ma.ensa.internHub.repositories.UserRepository;
 import ma.ensa.internHub.services.EmailNotificationService;
@@ -22,62 +23,78 @@ import ma.ensa.internHub.services.PasswordResetService;
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-    @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
+        @Autowired
+        private PasswordResetTokenRepository passwordResetTokenRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private EmailNotificationService emailNotificationService;
+        @Autowired
+        private EmailNotificationService emailNotificationService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
-    private static final int TOKEN_EXPIRY_MINUTES = 5;
+        @Value("${app.frontend.url}")
+        private String frontendUrl;
 
-    @Override
-    @Transactional
-    public void generateAndSendResetToken(String email) {
-       User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
-        String token = VerificationCodeGenerator.generateVerificationCode();
-        LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(TOKEN_EXPIRY_MINUTES);
+        @Override
+        @Transactional
+        public void generateAndSendResetToken(String email) {
+                User user = userRepository.findByEmail(email)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "User with email " + email + " not found"));
 
-        PasswordResetToken passwordResetToken = PasswordResetToken.builder().token(token).expiryDate(expiryDate).email(email).build() ;
-        passwordResetTokenRepository.save(passwordResetToken);
+                passwordResetTokenRepository.findByEmail(email).ifPresent(existingToken -> {
+                        if (existingToken.getExpiryDate().isAfter(LocalDateTime.now())) {
+                                long secondsRemaining = Duration
+                                                .between(LocalDateTime.now(), existingToken.getExpiryDate())
+                                                .getSeconds();
+                                throw new TokenAlreadySentException(
+                                                "Token already sent. Please try again in " + secondsRemaining
+                                                                + " seconds",
+                                                secondsRemaining);
+                        }
+                        passwordResetTokenRepository.delete(existingToken);
+                });
 
-        String resetLink = "http://localhost:8080/reset-password?token=" + token;
+                PasswordResetToken newToken = PasswordResetToken.builder()
+                                .email(email)
+                                .build();
 
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("resetLink", resetLink);
-        templateModel.put("userName",user.getName());
+                passwordResetTokenRepository.save(newToken);
 
-        emailNotificationService.sendHtmlEmail(
-                email,
-                "Password Reset Request",
-                "password-reset",
-                templateModel,
-                null
-        );
-    }
+                String resetLink = frontendUrl + "/reset-password?token=" + newToken.getToken();
 
-    @Override
-    @Transactional
-    public void resetPassword(String token, String newPassword) {
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
-                .orElseThrow(() -> new InvalidVerificationCodeException("Invalid or expired token"));
+                Map<String, Object> templateModel = Map.of(
+                                "resetLink", resetLink,
+                                "userName", user.getName());
 
-        if (passwordResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new InvalidVerificationCodeException("Token has expired");
+                emailNotificationService.sendHtmlEmail(
+                                user.getEmail(),
+                                "Password Reset Request",
+                                "password-reset",
+                                templateModel,
+                                null);
         }
 
-       String email = passwordResetToken.getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
+        @Override
+        @Transactional
+        public void resetPassword(String token, String newPassword) {
+                PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
+                                .orElseThrow(() -> new InvalidVerificationCodeException("Invalid or expired token"));
 
-        passwordResetTokenRepository.delete(passwordResetToken);
-    }
+                if (passwordResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+                        throw new InvalidVerificationCodeException("Token has expired");
+                }
+
+                String email = passwordResetToken.getEmail();
+                User user = userRepository.findByEmail(email)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "User with email " + email + " not found"));
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+
+                passwordResetTokenRepository.delete(passwordResetToken);
+        }
 }
