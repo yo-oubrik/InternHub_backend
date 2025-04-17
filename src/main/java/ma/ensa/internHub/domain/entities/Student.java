@@ -35,8 +35,6 @@ public class Student extends User {
     @ValidName
     private String lastName;
 
-
-
     private String school;
 
     private String profileTitle;
@@ -71,6 +69,11 @@ public class Student extends User {
     @OneToMany(mappedBy = "flaggedStudent", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<StudentFlag> studentFlagsReceived = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Application> applications = new ArrayList<>();
+
 
     @Override
     public Role getRole() {
