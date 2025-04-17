@@ -72,9 +72,18 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies").hasRole(Role.ADMIN.name())
                         // Student endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/v1/applications").hasRole(Role.STUDENT.name())
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/applications").hasRole(Role.STUDENT.name())
+
+
+
                         // Company endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/internships").hasRole(Role.COMPANY.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/internships/{id}").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET,"/api/v1/applications/company/{companyId}").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/applications/internship/{internshipId}").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET,"/api/v1/applications/company/{companyId}/count").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET,"/api/v1/applications/company/{companyId}/count/{status}").hasRole(Role.COMPANY.name())
 
                         // Secure everything else
                         .anyRequest().authenticated())
