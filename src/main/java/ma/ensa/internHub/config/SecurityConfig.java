@@ -46,7 +46,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
-        http
+        HttpSecurity httpSecurity = http
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
                     corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
@@ -72,7 +72,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies").hasRole(Role.ADMIN.name())
                         // Student endpoints
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/students/{id}").hasRole(Role.STUDENT.name())
+                        // Company endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/v1/internships").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/internships/{id}").hasRole(Role.COMPANY.name())
+
                         // Secure everything else
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())

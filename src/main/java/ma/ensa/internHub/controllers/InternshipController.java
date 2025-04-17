@@ -39,39 +39,33 @@ public class InternshipController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<InternshipResponse> createInternship(@Valid @RequestBody InternshipRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(internshipService.saveInternship(request));
     }
 
-    @GetMapping("/allInternships")
+    @GetMapping
     public ResponseEntity<List<InternshipResponse>> getAllInternships() {
         return ResponseEntity.ok(internshipService.getAllInternships());
     }
-    @GetMapping("/InternshipByID/{id}")
+
+    @GetMapping("/{id}")
     public ResponseEntity<InternshipResponse> getInternshipById(@PathVariable UUID id) {
         return ResponseEntity.ok(internshipService.getInternshipById(id));
     }
 
-    @GetMapping("/internshipsByCompany/{companyId}")
+    @GetMapping("/company/{companyId}")
     public ResponseEntity<List<InternshipResponse>> getInternshipsByCompany(@PathVariable UUID companyId) {
         return ResponseEntity.ok(internshipService.getInternshipsByCompanyId(companyId));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<InternshipResponse> updateInternship(
-            @PathVariable UUID id,
-            @Valid @RequestBody InternshipRequest request) {
-        return ResponseEntity.ok(internshipService.updateInternship(id, request));
-    }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInternship(@PathVariable UUID id) {
         internshipService.deleteInternship(id);
         return ResponseEntity.noContent().build();
     }
-
 
 
 }

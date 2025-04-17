@@ -13,6 +13,8 @@ import ma.ensa.internHub.mappers.InternshipMapper;
 import ma.ensa.internHub.repositories.CompanyRepository;
 import ma.ensa.internHub.repositories.InternshipRepository;
 import ma.ensa.internHub.services.InternshipService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,16 +45,17 @@ InternshipServiceImpl implements InternshipService {
     @Override
     @Transactional
     public InternshipResponse saveInternship(InternshipRequest request) {
-        Company company = companyRepository.findById(request.getCompanyId())
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Company company = companyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Company not found with id: " + request.getCompanyId()));
+                        "Company not found with email: " + email));
 
         Internship internship = internshipMapper.toEntity(request);
         internship.setCompany(company);
-
         Internship savedInternship = internshipRepository.save(internship);
-        CompanyResponse companyResponse = companyMapper.toResponse(company);
 
+        CompanyResponse companyResponse = companyMapper.toResponse(company);
         InternshipResponse response = internshipMapper.toResponse(savedInternship);
         response.setCompanyResponse(companyResponse);
         return response ;
@@ -79,6 +82,7 @@ InternshipServiceImpl implements InternshipService {
         InternshipResponse response = internshipMapper.toResponse(internship);
         Company company = internship.getCompany();
         CompanyResponse companyResponse = companyMapper.toResponse(company);
+
         response.setCompanyResponse(companyResponse);
 
         return response;
@@ -100,23 +104,6 @@ InternshipServiceImpl implements InternshipService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional
-    public InternshipResponse updateInternship(UUID id, InternshipRequest request) {
-        Internship existingInternship = internshipRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Internship not found with id: " + id));
-
-        if (!existingInternship.getCompany().getId().equals(request.getCompanyId())) {
-            Company newCompany = companyRepository.findById(request.getCompanyId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Company not found with id: " + request.getCompanyId()));
-            existingInternship.setCompany(newCompany);
-        }
-
-        internshipMapper.updateFromRequest(request, existingInternship);
-        Internship updatedInternship = internshipRepository.save(existingInternship);
-        return internshipMapper.toResponse(updatedInternship);
-    }
 
     @Override
     @Transactional

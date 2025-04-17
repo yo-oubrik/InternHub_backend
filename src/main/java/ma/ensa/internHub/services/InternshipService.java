@@ -20,6 +20,5 @@ public interface InternshipService {
     List<InternshipResponse> getAllInternships();
     InternshipResponse getInternshipById(UUID id);
     List<InternshipResponse> getInternshipsByCompanyId(UUID companyId);
-    InternshipResponse updateInternship(UUID id, InternshipRequest request);
     void deleteInternship(UUID id);
 }

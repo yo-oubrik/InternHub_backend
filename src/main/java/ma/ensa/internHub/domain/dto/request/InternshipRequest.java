@@ -20,10 +20,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InternshipRequest {
-
-    @NotNull(message = "Company is required")
-    private UUID companyId;
-
     @NotBlank(message = "Description is required")
     @Size(min = 120, message = "Description should be at least 120 characters")
     private String description;

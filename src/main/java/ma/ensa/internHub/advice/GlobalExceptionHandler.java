@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import ma.ensa.internHub.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,6 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import ma.ensa.internHub.domain.dto.response.ApiErrorResponse;
-import ma.ensa.internHub.exception.DuplicateResourceException;
-import ma.ensa.internHub.exception.EmailSendingException;
-import ma.ensa.internHub.exception.EmptyResourcesException;
-import ma.ensa.internHub.exception.ResourceNotFoundException;
-import ma.ensa.internHub.exception.InvalidVerificationCodeException;
-import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
