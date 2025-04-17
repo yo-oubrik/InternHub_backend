@@ -1,5 +1,8 @@
 package ma.ensa.internHub.domain.entities;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,12 +11,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-import ma.ensa.internHub.domain.dto.request.CompanyRequest;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -30,9 +30,6 @@ public class PendingCompany {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "Address is required")
-    private String address;
-
     @Email(message = "Invalid email format")
     private String email;
 
@@ -44,7 +41,6 @@ public class PendingCompany {
     @Size(message = "Password should be at least 8 characters", min = 8)
     private String password;
     private String profilePicture;
-
 
     private String confirmationCode;
 

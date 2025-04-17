@@ -23,9 +23,6 @@ public class CompanyRequest {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "Address is required")
-    private String address;
-
     @Email(message = "Invalid email format")
     private String email;
 

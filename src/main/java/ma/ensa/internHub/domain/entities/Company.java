@@ -32,9 +32,6 @@ public class Company extends User {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "Address is required")
-    private String address;
-
     @NotBlank(message = "ICE number is required")
     @Pattern(regexp = "^\\d{15}$", message = "ICE must be exactly 15 digits")
     private String ice;
