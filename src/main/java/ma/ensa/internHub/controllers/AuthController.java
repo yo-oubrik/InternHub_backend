@@ -2,9 +2,6 @@ package ma.ensa.internHub.controllers;
 
 import java.util.Base64;
 
-import ma.ensa.internHub.domain.dto.request.CompanyRequest;
-import ma.ensa.internHub.services.CompanyService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.dto.request.CompanyRequest;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.LoginRequest;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.AuthResponse;
 import ma.ensa.internHub.services.AuthService;
+import ma.ensa.internHub.services.CompanyService;
 import ma.ensa.internHub.services.StudentService;
 
 @RestController
