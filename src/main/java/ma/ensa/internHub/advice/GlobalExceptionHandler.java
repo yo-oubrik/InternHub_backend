@@ -34,6 +34,7 @@ public class GlobalExceptionHandler {
 
                 ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
                                 "Validation failed", request);
+                errorResponse.setValidationErrors(errors);
 
                 return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
