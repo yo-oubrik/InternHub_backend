@@ -56,6 +56,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public CompanyResponse getCompanyById(UUID id) {
+        return companyRepository.findById(id)
+                .map(companyMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+    }
+
+    @Override
     public Map<String, Long> countCompaniesByMonth() {
         List<Object[]> results = companyRepository.countCompaniesByMonth();
         Map<String, Long> companyCountByMonth = new LinkedHashMap<>();

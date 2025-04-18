@@ -16,6 +16,8 @@ public interface CompanyService {
 
     long countCompanies();
 
+    CompanyResponse getCompanyById(UUID id);
+
     List<CompanyResponse> getAllCompanies();
 
     void deleteCompanyById(UUID id);

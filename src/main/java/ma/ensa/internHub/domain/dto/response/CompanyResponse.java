@@ -16,9 +16,10 @@ public class CompanyResponse {
     private String name;
     private String description;
     private String address;
+    private String role;
     private String email;
     private String ice;
     private LocalDateTime createdAt;
     private String profilePicture;
-    private Links links ;
+    private Links links;
 }

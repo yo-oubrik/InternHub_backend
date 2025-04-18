@@ -35,8 +35,6 @@ public class Student extends User {
     @ValidName
     private String lastName;
 
-
-
     private String school;
 
     private String profileTitle;
@@ -52,17 +50,21 @@ public class Student extends User {
 
     private String profileDescription;
 
-     @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval = true)
-     private List<Experience> experiences;
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<Experience> experiences;
 
-     @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval = true)
-     private List<Formation> formations;
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<Formation> formations;
 
-     @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval = true)
-     private List<Project> projects;
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<Project> projects;
 
-     @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval = true)
-     private List<Certificat> certificates;
+    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<Certificat> certificates;
 
     @OneToMany(mappedBy = "flaggedByStudent", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -79,6 +81,6 @@ public class Student extends User {
 
     @Override
     public String getName() {
-     return firstName + " " + lastName;
+        return firstName + " " + lastName;
     }
 }

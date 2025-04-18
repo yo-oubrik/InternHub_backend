@@ -26,6 +26,11 @@ public class CompanyController {
         return companyService.countCompaniesByMonth();
     }
 
+    @GetMapping("/{id}")
+    public CompanyResponse getCompanyById(@PathVariable UUID id) {
+        return companyService.getCompanyById(id);
+    }
+
     @GetMapping("/count")
     public long countAllCompanies() {
         return companyService.countCompanies();
