@@ -3,6 +3,7 @@ package ma.ensa.internHub.domain.entities;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,20 +37,17 @@ public class Internship {
 
     @NotBlank(message = "Description is required")
     @Size(min = 120, message = "Description should be at least 120 characters")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Positive(message = "Duration must be positive")
     private int duration;
 
-    @Positive(message = "Salary must be positive")
     private double salary;
 
     @NotNull(message = "Salary type is required")
     @Enumerated(EnumType.STRING)
     private SalaryType salaryType;
-
-    @NotBlank(message = "Domain is required")
-    private String domain;
 
     @NotBlank(message = "Title is required")
     private String title;
@@ -65,11 +63,14 @@ public class Internship {
     @NotNull(message = "At least one skill must be specified")
     @Size(min = 1, message = "You must provide at least one skill")
     @ElementCollection
-    private List< @NotBlank(message = "Skill cannot be blank") String> skills;
+    private List<@NotBlank(message = "Skill cannot be blank") String> skills;
 
     @NotNull(message = "negotiable status is required")
     private boolean negotiable;
-    private boolean paid;
 
+    @NotNull(message = "motivation letter is required")
+    private boolean isMotivationLetterRequired;
+
+    private boolean paid;
 
 }

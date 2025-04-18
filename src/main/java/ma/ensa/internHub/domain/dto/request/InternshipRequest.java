@@ -13,7 +13,6 @@ import ma.ensa.internHub.domain.entities.SalaryType;
 import ma.ensa.internHub.domain.entities.WorkMode;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -27,14 +26,14 @@ public class InternshipRequest {
     @Positive(message = "Duration must be positive")
     private int duration;
 
-    @Positive(message = "Salary must be positive")
+    // @Salary
     private double salary;
 
     @NotNull(message = "Salary type is required")
     private SalaryType salaryType;
 
-    @NotBlank(message = "Domain is required")
-    private String domain;
+    @NotNull(message = "motivation letter is required")
+    private boolean isMotivationLetterRequired;
 
     @NotBlank(message = "Title is required")
     private String title;

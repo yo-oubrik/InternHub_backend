@@ -19,7 +19,7 @@ public class InternshipResponse {
 
     private UUID id;
 
-    private CompanyResponse companyResponse;
+    private CompanyResponse company;
 
     private String description;
 
@@ -29,7 +29,7 @@ public class InternshipResponse {
 
     private SalaryType salaryType;
 
-    private String domain;
+    private boolean isMotivationLetterRequired;
 
     private String title;
 

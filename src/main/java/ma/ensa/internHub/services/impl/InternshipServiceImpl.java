@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class
-InternshipServiceImpl implements InternshipService {
+public class InternshipServiceImpl implements InternshipService {
 
     private final InternshipRepository internshipRepository;
     private final CompanyRepository companyRepository;
@@ -57,8 +56,8 @@ InternshipServiceImpl implements InternshipService {
 
         CompanyResponse companyResponse = companyMapper.toResponse(company);
         InternshipResponse response = internshipMapper.toResponse(savedInternship);
-        response.setCompanyResponse(companyResponse);
-        return response ;
+        response.setCompany(companyResponse);
+        return response;
     }
 
     @Override
@@ -68,7 +67,7 @@ InternshipServiceImpl implements InternshipService {
                     InternshipResponse response = internshipMapper.toResponse(internship);
                     Company company = internship.getCompany();
                     CompanyResponse companyResponse = companyMapper.toResponse(company);
-                    response.setCompanyResponse(companyResponse);
+                    response.setCompany(companyResponse);
                     return response;
                 })
                 .collect(Collectors.toList());
@@ -83,7 +82,7 @@ InternshipServiceImpl implements InternshipService {
         Company company = internship.getCompany();
         CompanyResponse companyResponse = companyMapper.toResponse(company);
 
-        response.setCompanyResponse(companyResponse);
+        response.setCompany(companyResponse);
 
         return response;
     }
@@ -98,12 +97,11 @@ InternshipServiceImpl implements InternshipService {
         return internshipRepository.findByCompanyId(companyId).stream()
                 .map(internship -> {
                     InternshipResponse response = internshipMapper.toResponse(internship);
-                    response.setCompanyResponse(companyResponse);
+                    response.setCompany(companyResponse);
                     return response;
                 })
                 .collect(Collectors.toList());
     }
-
 
     @Override
     @Transactional
@@ -113,6 +111,5 @@ InternshipServiceImpl implements InternshipService {
         }
         internshipRepository.deleteById(id);
     }
-
 
 }

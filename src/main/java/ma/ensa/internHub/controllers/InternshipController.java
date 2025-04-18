@@ -4,9 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.InternshipRequest;
 import ma.ensa.internHub.domain.dto.response.InternshipResponse;
-import ma.ensa.internHub.domain.entities.Internship;
 import ma.ensa.internHub.domain.entities.WorkMode;
-import ma.ensa.internHub.mappers.InternshipMapper;
 import ma.ensa.internHub.services.InternshipService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,6 @@ import java.util.UUID;
 public class InternshipController {
 
     private final InternshipService internshipService;
-    private final InternshipMapper internshipMapper;
 
     @GetMapping("/count/remote")
     public long countRemoteInternships() {
@@ -37,7 +34,6 @@ public class InternshipController {
     public long countAllInternships() {
         return internshipService.countAllInternships();
     }
-
 
     @PostMapping
     public ResponseEntity<InternshipResponse> createInternship(@Valid @RequestBody InternshipRequest request) {
@@ -60,12 +56,10 @@ public class InternshipController {
         return ResponseEntity.ok(internshipService.getInternshipsByCompanyId(companyId));
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInternship(@PathVariable UUID id) {
         internshipService.deleteInternship(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }
