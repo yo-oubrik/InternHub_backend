@@ -17,5 +17,4 @@ public class CompanyFlagController {
     public long unresolvedCompanyFlags() {
         return companyFlagService.countUnresolvedCompanyFlags();
     }
-
 }

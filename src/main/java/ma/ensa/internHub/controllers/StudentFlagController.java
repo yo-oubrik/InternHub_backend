@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,5 +48,10 @@ public class StudentFlagController {
     @GetMapping("/{id}/warnings/count")
     public long getStudentWarningsCount(@PathVariable UUID id) {
         return studentFlagService.getStudentWarningsCount(id);
+    }
+
+    @PutMapping("/{id}/ignore")
+    public void ignoreStudentFlag(@PathVariable UUID id) {
+        studentFlagService.ignoreStudentFlag(id);
     }
 }

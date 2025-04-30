@@ -5,16 +5,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import ma.ensa.internHub.domain.entities.PendingStudent;
+import ma.ensa.internHub.domain.entities.PendingUser;
 
-@Repository
-public interface PendingStudentRepository extends JpaRepository<PendingStudent, UUID> {
-
-    Optional<PendingStudent> findByEmail(String email);
-
+public interface PendingUserRepository extends JpaRepository<PendingUser, UUID> {
     boolean existsByEmail(String email);
 
+    Optional<PendingUser> findByEmail(String email);
+
     void deleteByExpiryDateBefore(LocalDateTime dateTime);
+
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
 import ma.ensa.internHub.domain.dto.response.StudentFlagResponse;
@@ -49,5 +50,15 @@ public class StudentFlagServiceImpl implements StudentFlagService {
         return studentFlagRepository.findAll().stream()
                 .map(studentFlagMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    public void ignoreStudentFlag(UUID id) {
+        studentFlagRepository.findById(id)
+                .map(studentFlag -> {
+                    studentFlag.setReportStatus(ReportStatus.IGNORED);
+                    return studentFlagRepository.save(studentFlag);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Student flag not found with id: " + id));
     }
 }

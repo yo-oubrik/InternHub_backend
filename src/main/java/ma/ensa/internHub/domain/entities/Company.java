@@ -29,10 +29,8 @@ public class Company extends User {
     private String name;
 
     @Size(min = 10, max = 500, message = "Description must be between 10 and 500 characters")
-    @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "ICE number is required")
     @Pattern(regexp = "^\\d{15}$", message = "ICE must be exactly 15 digits")
     private String ice;
 

@@ -18,4 +18,6 @@ public interface StudentFlagService {
     long getStudentWarningsCount(UUID id);
 
     List<StudentFlagResponse> getStudentFlagsHistory();
+
+    void ignoreStudentFlag(UUID id);
 }
