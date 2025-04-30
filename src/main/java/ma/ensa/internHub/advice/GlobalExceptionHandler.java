@@ -18,6 +18,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import ma.ensa.internHub.domain.dto.response.ApiErrorResponse;
+import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.exception.EmailSendingException;
 import ma.ensa.internHub.exception.EmptyResourcesException;
@@ -140,6 +141,16 @@ public class GlobalExceptionHandler {
                 ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.TOO_MANY_REQUESTS,
                                 ex.getMessage(), request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
+        }
+
+        // bad request exception
+        @ExceptionHandler(BadRequestException.class)
+        public ResponseEntity<ApiErrorResponse> handleBadRequestException(
+                        BadRequestException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
         @ExceptionHandler(Exception.class)
