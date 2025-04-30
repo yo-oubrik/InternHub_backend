@@ -10,7 +10,9 @@ import org.springframework.data.repository.query.Param;
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
 import ma.ensa.internHub.domain.entities.StudentFlag;
 import ma.ensa.internHub.domain.enums.ReportStatus;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface StudentFlagRepository extends JpaRepository<StudentFlag, UUID> {
     long countByReportStatus(ReportStatus reportStatus);
 
