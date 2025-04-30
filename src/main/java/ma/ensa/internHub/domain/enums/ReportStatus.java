@@ -1,7 +1,7 @@
 package ma.ensa.internHub.domain.enums;
 
 public enum ReportStatus {
-    IGNORED,
+    RESOLVED,
     UNRESOLVED,
     WARNED
 }

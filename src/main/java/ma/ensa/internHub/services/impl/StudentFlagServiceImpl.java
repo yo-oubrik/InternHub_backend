@@ -7,11 +7,15 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
+import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
 import ma.ensa.internHub.domain.dto.response.StudentFlagResponse;
 import ma.ensa.internHub.domain.enums.ReportStatus;
+import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.mappers.StudentFlagMapper;
 import ma.ensa.internHub.repositories.StudentFlagRepository;
+import ma.ensa.internHub.services.EmailNotificationService;
 import ma.ensa.internHub.services.StudentFlagService;
 
 @Service
@@ -19,6 +23,7 @@ import ma.ensa.internHub.services.StudentFlagService;
 public class StudentFlagServiceImpl implements StudentFlagService {
     private final StudentFlagRepository studentFlagRepository;
     private final StudentFlagMapper studentFlagMapper;
+    private final EmailNotificationService emailNotificationService;
 
     @Override
     public long countUnresolvedStudentFlags() {
@@ -37,7 +42,7 @@ public class StudentFlagServiceImpl implements StudentFlagService {
 
     @Override
     public long getIgnoredFlagsCountByStudentId(UUID id) {
-        return studentFlagRepository.countByFlaggedStudent_IdAndReportStatus(id, ReportStatus.IGNORED);
+        return studentFlagRepository.countByFlaggedStudent_IdAndReportStatus(id, ReportStatus.RESOLVED);
     }
 
     @Override
@@ -46,8 +51,8 @@ public class StudentFlagServiceImpl implements StudentFlagService {
     }
 
     @Override
-    public List<StudentFlagResponse> getStudentFlagsHistory() {
-        return studentFlagRepository.findAll().stream()
+    public List<StudentFlagResponse> getStudentFlagsHistory(UUID id) {
+        return studentFlagRepository.findByFlaggedStudent_Id(id).stream()
                 .map(studentFlagMapper::toResponse)
                 .toList();
     }
@@ -56,9 +61,32 @@ public class StudentFlagServiceImpl implements StudentFlagService {
     public void ignoreStudentFlag(UUID id) {
         studentFlagRepository.findById(id)
                 .map(studentFlag -> {
-                    studentFlag.setReportStatus(ReportStatus.IGNORED);
+                    if (!(studentFlag.getReportStatus() == ReportStatus.UNRESOLVED)) {
+                        throw new BadRequestException("Flag already resolved or student warned");
+                    }
+                    studentFlag.setReportStatus(ReportStatus.RESOLVED);
                     return studentFlagRepository.save(studentFlag);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Student flag not found with id: " + id));
+    }
+
+    @Override
+    public void warnStudent(UUID id, NotificationRequest request) {
+        var studentFlag = studentFlagRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student flag not found with id: " + id));
+
+        if (studentFlag.getReportStatus() != ReportStatus.UNRESOLVED) {
+            throw new BadRequestException("Flag already resolved or student warned");
+        }
+
+        emailNotificationService.sendDynamicEmailWithMultipartAttachments(
+                EmailWithAttachmentsRequest.builder().to(studentFlag.getFlaggedStudent().getEmail())
+                        .subject(request.getSubject())
+                        .recepientName(studentFlag.getFlaggedStudent().getFirstName())
+                        .htmlBody(request.getMessage())
+                        .attachments(request.getAttachments()).build());
+
+        studentFlag.setReportStatus(ReportStatus.WARNED);
+        studentFlagRepository.save(studentFlag);
     }
 }

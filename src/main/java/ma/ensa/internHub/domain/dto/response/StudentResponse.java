@@ -27,8 +27,6 @@ public class StudentResponse {
     private String profilePicture;
     private String profileDescription;
     private Links links;
-    // private List<ExperienceResponse> experiences;
-    // private List<FormationResponse> formations;
-    // private List<ProjectResponse> projects;
-    // private List<CertificatResponse> certificates;
+    private boolean blocked;
+    private LocalDateTime blockedAt;
 }

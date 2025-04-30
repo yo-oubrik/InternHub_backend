@@ -12,4 +12,5 @@ public interface EmailNotificationService {
         void sendDynamicEmailWithMultipartAttachments(EmailWithAttachmentsRequest emailWithAttachmentsDto);
 
         void sendEmailConfirmationCode(String email, String username, String verificationCode);
+
 }

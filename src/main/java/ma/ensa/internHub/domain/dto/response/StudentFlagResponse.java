@@ -16,7 +16,8 @@ public class StudentFlagResponse {
     private UUID id;
     private String reason;
     private String description;
-    private LocalDateTime date;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private ReportStatus reportStatus;
     private String studentId;
     private String companyId;
