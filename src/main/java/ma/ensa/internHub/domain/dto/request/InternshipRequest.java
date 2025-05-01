@@ -8,12 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ma.ensa.internHub.domain.entities.InternshipType;
 import ma.ensa.internHub.domain.entities.SalaryType;
 import ma.ensa.internHub.domain.entities.WorkMode;
-
+import ma.ensa.internHub.domain.entities.InternshipType;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
