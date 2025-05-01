@@ -1,16 +1,17 @@
 package ma.ensa.internHub.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ma.ensa.internHub.services.PasswordResetService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/password-reset")
 public class PasswordResetController {
 
-    @Autowired
+
     private PasswordResetService passwordResetService;
 
     @PostMapping("/request")

@@ -75,6 +75,14 @@ public class SecurityConfig {
                         // Student endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/applications").hasRole(Role.STUDENT.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/applications").hasRole(Role.STUDENT.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/applications").hasRole(Role.STUDENT.name())
+
+
+                        .requestMatchers("/api/v1/certificates/**").hasRole(Role.STUDENT.name())
+                        .requestMatchers("/api/v1/experiences/**").hasRole(Role.STUDENT.name())
+                        .requestMatchers("/api/v1/formations/**").hasRole(Role.STUDENT.name())
+                        .requestMatchers("/api/v1/Projects/**").hasRole(Role.STUDENT.name())
+
 
 
 
