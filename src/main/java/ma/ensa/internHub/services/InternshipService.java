@@ -2,7 +2,6 @@ package ma.ensa.internHub.services;
 
 import ma.ensa.internHub.domain.dto.request.InternshipRequest;
 import ma.ensa.internHub.domain.dto.response.InternshipResponse;
-import ma.ensa.internHub.domain.entities.Internship;
 import ma.ensa.internHub.domain.entities.WorkMode;
 
 import java.util.List;
