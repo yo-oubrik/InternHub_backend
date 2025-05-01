@@ -13,7 +13,10 @@ import ma.ensa.internHub.mappers.StudentMapper;
 import ma.ensa.internHub.repositories.CompanyRepository;
 import ma.ensa.internHub.repositories.ExperienceRepository;
 import ma.ensa.internHub.repositories.StudentRepository;
+import ma.ensa.internHub.security.SecurityUtils;
 import ma.ensa.internHub.services.ExperienceService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,10 +33,11 @@ public class ExperienceServiceImpl implements ExperienceService {
     private final ExperienceMapper experienceMapper;
     private final StudentMapper studentMapper;
     private final CompanyMapper companyMapper;
+    private final  String email = SecurityUtils.getCurrentUserEmail();
 
     @Override
     public ExperienceResponse createExperience(ExperienceRequest request) {
-        Student student = studentRepository.findById(request.getStudentId())
+        Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         Company company = companyRepository.findById(request.getCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
@@ -78,8 +82,12 @@ public class ExperienceServiceImpl implements ExperienceService {
     public ExperienceResponse updateExperience(UUID id, ExperienceRequest request) {
         Experience experience = experienceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
-        Student student = studentRepository.findById(request.getStudentId())
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
         Company company = companyRepository.findById(request.getCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
 

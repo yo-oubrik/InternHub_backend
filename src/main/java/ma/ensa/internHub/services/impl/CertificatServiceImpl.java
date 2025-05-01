@@ -11,7 +11,10 @@ import ma.ensa.internHub.mappers.CertificatMapper;
 import ma.ensa.internHub.mappers.StudentMapper;
 import ma.ensa.internHub.repositories.CertificatRepository;
 import ma.ensa.internHub.repositories.StudentRepository;
+import ma.ensa.internHub.security.SecurityUtils;
 import ma.ensa.internHub.services.CertificatService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,10 +29,11 @@ public class CertificatServiceImpl implements CertificatService {
     private final StudentRepository studentRepository;
     private final CertificatMapper certificatMapper;
     private final StudentMapper studentMapper;
+    private final  String email = SecurityUtils.getCurrentUserEmail();
 
     @Override
     public CertificatResponse createCertificat(CertificatRequest request) {
-        Student student = studentRepository.findById(request.getStudentId())
+        Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
         Certificat certificat = certificatMapper.toEntity(request);
@@ -72,7 +76,9 @@ public class CertificatServiceImpl implements CertificatService {
         Certificat certificat = certificatRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Certificat not found"));
 
-        Student student = studentRepository.findById(request.getStudentId())
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
         certificatMapper.updateEntityFromRequest(request, certificat);
