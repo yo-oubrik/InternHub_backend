@@ -1,5 +1,6 @@
 package ma.ensa.internHub.domain.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,10 @@ public class Company extends User {
 
     @Embedded
     private Links links;
+
+    private boolean blocked;
+
+    private LocalDateTime blockedAt;
 
     @Override
     public Role getRole() {

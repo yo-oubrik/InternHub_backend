@@ -1,15 +1,18 @@
 package ma.ensa.internHub.domain.entities;
 
-import jakarta.persistence.*;
+import java.util.UUID;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ma.ensa.internHub.validation.ValidDate;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -39,6 +42,5 @@ public class Formation {
 
     @ManyToOne
     private Student student;
-
 
 }

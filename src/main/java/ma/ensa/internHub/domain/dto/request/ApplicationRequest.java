@@ -1,6 +1,8 @@
 package ma.ensa.internHub.domain.dto.request;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,12 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ensa.internHub.domain.enums.ApplicationStatus;
-import ma.ensa.internHub.validation.ValidDate;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.UUID;
-
 
 @Data
 @AllArgsConstructor
