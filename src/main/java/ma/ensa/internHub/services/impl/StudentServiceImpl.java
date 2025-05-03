@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
+import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
+import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
 import ma.ensa.internHub.domain.entities.PendingStudent;
@@ -34,6 +37,7 @@ import ma.ensa.internHub.services.StudentService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StudentServiceImpl implements StudentService {
 
     private final UserRepository userRepository;
@@ -83,7 +87,6 @@ public class StudentServiceImpl implements StudentService {
     public StudentResponse getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
-        // includeAssociations(student);
         return studentMapper.toResponse(student);
     }
 
@@ -139,18 +142,49 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.toResponse(student);
     }
 
-    // private void includeAssociations(Student student) {
-    // List<Experience> experiences =
-    // experienceRepository.findByStudentId(student.getId());
-    // student.setExperiences(experiences);
-    // List<Formation> formations =
-    // formationRepository.findByStudentId(student.getId());
-    // student.setFormations(formations);
-    // List<Project> projects = projectRepository.findByStudentId(student.getId());
-    // student.setProjects(projects);
-    // List<Certificat> certificates =
-    // certificatRepository.findByStudentId(student.getId());
-    // student.setCertificates(certificates);
-    // }
+    @Override
+    public void blockStudent(UUID id, NotificationRequest request) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id));
 
+        if (student.isBlocked()) {
+            throw new BadRequestException("Student is already blocked");
+        }
+
+        emailNotificationService.sendDynamicEmailWithMultipartAttachments(
+                EmailWithAttachmentsRequest.builder()
+                        .to(student.getEmail())
+                        .subject(request.getSubject())
+                        .recepientName(student.getFirstName())
+                        .htmlBody(request.getMessage())
+                        .attachments(request.getAttachments())
+                        .build());
+
+        student.setBlocked(true);
+        student.setBlockedAt(LocalDateTime.now());
+        studentRepository.save(student);
+    }
+
+    @Override
+    public void unblockStudent(UUID id, NotificationRequest request) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id));
+
+        if (!student.isBlocked()) {
+            throw new BadRequestException("Student is not blocked");
+        }
+
+        emailNotificationService.sendDynamicEmailWithMultipartAttachments(
+                EmailWithAttachmentsRequest.builder()
+                        .to(student.getEmail())
+                        .subject(request.getSubject())
+                        .recepientName(student.getFirstName())
+                        .htmlBody(request.getMessage())
+                        .attachments(request.getAttachments())
+                        .build());
+
+        student.setBlocked(false);
+        student.setBlockedAt(null);
+        studentRepository.save(student);
+    }
 }

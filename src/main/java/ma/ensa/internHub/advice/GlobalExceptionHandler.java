@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import ma.ensa.internHub.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,14 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import ma.ensa.internHub.domain.dto.response.ApiErrorResponse;
+import ma.ensa.internHub.exception.BadRequestException;
+import ma.ensa.internHub.exception.DuplicateResourceException;
+import ma.ensa.internHub.exception.EmailSendingException;
+import ma.ensa.internHub.exception.EmptyResourcesException;
+import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
+import ma.ensa.internHub.exception.InvalidVerificationCodeException;
+import ma.ensa.internHub.exception.ResourceNotFoundException;
+import ma.ensa.internHub.exception.TokenAlreadySentException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -126,6 +133,25 @@ public class GlobalExceptionHandler {
                 ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
                                 ex.getMessage(), request);
                 return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(TokenAlreadySentException.class)
+        public ResponseEntity<ApiErrorResponse> handleTokenAlreadySentException(
+                        TokenAlreadySentException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.TOO_MANY_REQUESTS,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
+        }
+
+        // bad request exception
+        @ExceptionHandler(BadRequestException.class)
+        public ResponseEntity<ApiErrorResponse> handleBadRequestException(
+                        BadRequestException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
         @ExceptionHandler(Exception.class)

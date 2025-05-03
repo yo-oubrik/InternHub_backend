@@ -9,20 +9,11 @@ import org.mapstruct.ReportingPolicy;
 
 import java.time.LocalDateTime;
 
-@Mapper(
-        componentModel = "spring",
-        imports = { LocalDateTime.class },
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
-)
+@Mapper(componentModel = "spring", imports = { LocalDateTime.class }, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PendingCompanyMapper {
 
-    @Mapping(target = "expiryDate", expression = "java(LocalDateTime.now().plusMinutes(5))")
     PendingCompany convertToPendingCompany(CompanyRequest request);
 
-    CompanyRequest convertToCompanyRequest(PendingCompany pendingCompany);
-
-    @Mapping(target = "id",ignore = true)
-    @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")
-    @Mapping(target = "updatedAt", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "id", ignore = true)
     Company convertToCompany(PendingCompany pendingCompany);
 }

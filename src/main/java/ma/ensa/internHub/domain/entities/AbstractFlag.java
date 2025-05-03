@@ -1,6 +1,5 @@
 package ma.ensa.internHub.domain.entities;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,23 +13,22 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ma.ensa.internHub.domain.enums.ReportStatus;
 
 @MappedSuperclass
 @Data
+@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class AbstractFlag {
+public abstract class AbstractFlag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @NotNull(message = "Date cannot be null")
-    private LocalDateTime date;
 
     @NotNull(message = "Reason cannot be null")
     private String reason;

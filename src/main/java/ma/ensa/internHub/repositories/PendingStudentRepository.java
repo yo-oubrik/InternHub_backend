@@ -1,5 +1,6 @@
 package ma.ensa.internHub.repositories;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,4 +15,6 @@ public interface PendingStudentRepository extends JpaRepository<PendingStudent, 
     Optional<PendingStudent> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    void deleteByExpiryDateBefore(LocalDateTime dateTime);
 }

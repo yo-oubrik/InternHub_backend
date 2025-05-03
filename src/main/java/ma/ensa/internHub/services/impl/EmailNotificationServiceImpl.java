@@ -1,9 +1,9 @@
 package ma.ensa.internHub.services.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -38,45 +37,6 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
 
     @Value("${spring.mail.username}")
     private String sender;
-
-    @Override
-    public void sendPlainTextEmail(String to, String subject, String body) {
-        try {
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(sender);
-            simpleMailMessage.setTo(to);
-            simpleMailMessage.setSubject(subject);
-            simpleMailMessage.setText(body);
-            javaMailSender.send(simpleMailMessage);
-        } catch (Exception e) {
-            log.error("Failed to send plain text email to {}: {}", to, e.getMessage());
-            throw new EmailSendingException("Failed to send email to " + to);
-        }
-    }
-
-    @Override
-    public void sendEmailWithAttachments(String to, String subject, String body, Map<String, String> attachments) {
-        try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-            messageHelper.setFrom(sender);
-            messageHelper.setTo(to);
-            messageHelper.setSubject(subject);
-            messageHelper.setText(body);
-
-            if (attachments != null) {
-                for (Entry<String, String> attachment : attachments.entrySet()) {
-                    String fileName = attachment.getKey();
-                    String filePath = attachment.getValue();
-                    messageHelper.addAttachment(fileName, new File(filePath));
-                }
-            }
-            javaMailSender.send(mimeMessage);
-        } catch (Exception e) {
-            log.error("Failed to send email with attachments to {}: {}", to, e.getMessage());
-            throw new EmailSendingException("Failed to send email to " + to);
-        }
-    }
 
     @Override
     public void sendHtmlEmail(String to, String subject, String templateName,
@@ -154,5 +114,19 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
             throw new EmailSendingException(
                     "Failed to send dynamic email with attachments to " + emailWithAttachmentsDto.getTo());
         }
+    }
+
+    @Override
+    public void sendEmailConfirmationCode(String email, String username, String verificationCode) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("userName", username);
+        templateModel.put("confirmationCode", verificationCode);
+
+        sendHtmlEmail(
+                email,
+                "InternHub - Email Confirmation Code",
+                "confirmation-code",
+                templateModel,
+                null);
     }
 }

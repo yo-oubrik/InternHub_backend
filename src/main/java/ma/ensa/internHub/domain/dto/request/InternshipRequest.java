@@ -8,10 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ma.ensa.internHub.domain.entities.InternshipType;
 import ma.ensa.internHub.domain.entities.SalaryType;
 import ma.ensa.internHub.domain.entities.WorkMode;
-
+import ma.ensa.internHub.domain.entities.InternshipType;
 import java.util.List;
 
 @Data
@@ -33,7 +32,7 @@ public class InternshipRequest {
     private SalaryType salaryType;
 
     @NotNull(message = "motivation letter is required")
-    private boolean isMotivationLetterRequired;
+    private boolean isMotivationLetterRequired; // motivationLetterRequired
 
     @NotBlank(message = "Title is required")
     private String title;
@@ -48,7 +47,7 @@ public class InternshipRequest {
     private List<@NotBlank(message = "Skill cannot be blank") String> skills;
 
     @NotNull(message = "Negotiable status is required")
-    private Boolean negotiable;
+    private Boolean negotiable; // boolean
 
-    private Boolean paid;
+    private Boolean paid; // boolean
 }

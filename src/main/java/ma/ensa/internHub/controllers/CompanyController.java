@@ -4,13 +4,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.services.CompanyService;
 
@@ -26,11 +30,6 @@ public class CompanyController {
         return companyService.countCompaniesByMonth();
     }
 
-    @GetMapping("/{id}")
-    public CompanyResponse getCompanyById(@PathVariable UUID id) {
-        return companyService.getCompanyById(id);
-    }
-
     @GetMapping("/count")
     public long countAllCompanies() {
         return companyService.countCompanies();
@@ -44,5 +43,31 @@ public class CompanyController {
     @GetMapping
     public List<CompanyResponse> getAllCompanies() {
         return companyService.getAllCompanies();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable UUID id) {
+        return ResponseEntity.ok(companyService.getCompanyById(id));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<CompanyResponse> getCompanyByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(companyService.getCompanyByEmail(email));
+    }
+
+    @PostMapping("/{id}/block")
+    public ResponseEntity<Void> blockCompany(
+            @PathVariable UUID id,
+            @ModelAttribute NotificationRequest request) {
+        companyService.blockCompany(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/unblock")
+    public ResponseEntity<Void> unblockCompany(
+            @PathVariable UUID id,
+            @ModelAttribute NotificationRequest request) {
+        companyService.unblockCompany(id, request);
+        return ResponseEntity.ok().build();
     }
 }

@@ -2,6 +2,7 @@ package ma.ensa.internHub.domain.entities;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
@@ -50,21 +51,20 @@ public class Student extends User {
 
     private String profileDescription;
 
-    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private List<Experience> experiences;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Experience> experiences;
 
-    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private List<Formation> formations;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Formation> formations;
 
-    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private List<Project> projects;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects;
 
-    // @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private List<Certificat> certificates;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Certificat> certificates;
+    private boolean blocked;
+
+    private LocalDateTime blockedAt;
 
     @OneToMany(mappedBy = "flaggedByStudent", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -73,6 +73,10 @@ public class Student extends User {
     @OneToMany(mappedBy = "flaggedStudent", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<StudentFlag> studentFlagsReceived = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Application> applications = new ArrayList<>();
 
     @Override
     public Role getRole() {

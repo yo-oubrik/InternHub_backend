@@ -1,10 +1,7 @@
 package ma.ensa.internHub.controllers;
 
-import java.util.Base64;
+import java.util.logging.Logger;
 
-import ma.ensa.internHub.domain.dto.request.CompanyRequest;
-import ma.ensa.internHub.services.CompanyService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.dto.request.CompanyRequest;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.LoginRequest;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
 import ma.ensa.internHub.domain.dto.response.AuthResponse;
 import ma.ensa.internHub.services.AuthService;
+import ma.ensa.internHub.services.CompanyService;
+import ma.ensa.internHub.services.PendingUserService;
 import ma.ensa.internHub.services.StudentService;
 
 @RestController
@@ -30,6 +30,8 @@ public class AuthController {
     private final AuthService authService;
     private final StudentService studentService;
     private final CompanyService companyService;
+    private final PendingUserService pendingUserService;
+    private final Logger logger = Logger.getLogger(AuthController.class.getName());
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -40,7 +42,8 @@ public class AuthController {
 
     @PostMapping("/verify-email/students")
     public ResponseEntity<String> sendVerificationCode(@RequestBody @Valid StudentRequest request) {
-        authService.initiateStudentVerification(request);
+        logger.info("Received email verification request for student: " + request);
+        pendingUserService.processStudentEmailVerification(request);
         return ResponseEntity.ok("Verification code sent to " + request.getEmail());
     }
 
@@ -50,15 +53,9 @@ public class AuthController {
         return ResponseEntity.ok("Email verified successfully");
     }
 
-    @GetMapping("/verification-status/students")
-    public ResponseEntity<Boolean> checkVerificationStatus(@RequestParam String email) {
-        String decodedEmail = new String(Base64.getDecoder().decode(email));
-        return ResponseEntity.ok(authService.isVerificationInitiated(decodedEmail));
-    }
-
     @PostMapping("/verify-email/companies")
     public ResponseEntity<String> registerCompany(@Valid @RequestBody CompanyRequest companyRequest) {
-        authService.initiateCompanyVerification(companyRequest);
+        pendingUserService.processCompanyEmailVerification(companyRequest);
         return ResponseEntity.ok("Verification code sent to " + companyRequest.getEmail());
     }
 
@@ -66,5 +63,10 @@ public class AuthController {
     public ResponseEntity<String> confirmCompanyEmail(@RequestBody @Valid EmailVerificationRequest request) {
         companyService.confirmAndRegisterCompany(request);
         return ResponseEntity.ok("Email verified successfully");
+    }
+
+    @GetMapping("/verification-status/students")
+    public ResponseEntity<Boolean> checkVerificationStatus(@RequestParam String email) {
+        return ResponseEntity.ok(pendingUserService.isVerificationInitiated(email));
     }
 }

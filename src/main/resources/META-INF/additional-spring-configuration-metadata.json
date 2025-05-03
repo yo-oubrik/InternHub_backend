@@ -3,5 +3,15 @@
     "name": "jwt.secret",
     "type": "java.lang.String",
     "description": "Secret used to sign JWTs. When not set, JWT support is disabled."
+  },
+  {
+    "name": "app.frontend.url",
+    "type": "java.lang.String",
+    "description": "URL of the frontend application. This is used to generate links in emails and other notifications."
+  },
+  {
+    "name": "jwt.expiry.ms",
+    "type": "java.lang.String",
+    "description": "Expiration time for JWTs. This is used to set the expiration time for the JWT token. "
   }
 ]}

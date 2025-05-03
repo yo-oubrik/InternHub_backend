@@ -10,15 +10,19 @@ import org.springframework.data.repository.query.Param;
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
 import ma.ensa.internHub.domain.entities.StudentFlag;
 import ma.ensa.internHub.domain.enums.ReportStatus;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface StudentFlagRepository extends JpaRepository<StudentFlag, UUID> {
     long countByReportStatus(ReportStatus reportStatus);
 
     long countByFlaggedStudent_IdAndReportStatus(UUID studentId, ReportStatus reportStatus);
 
+    List<StudentFlag> findByFlaggedStudent_Id(UUID studentId);
+
     @Query("SELECT new ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview( " +
             "sf.flaggedStudent.id, sf.flaggedStudent.firstName, sf.flaggedStudent.lastName, " +
-            "sf.flaggedStudent.email, COUNT(sf), MAX(sf.date)) " +
+            "sf.flaggedStudent.email, COUNT(sf), MAX(sf.createdAt)) " +
             "FROM StudentFlag sf " +
             "WHERE sf.reportStatus = :status " +
             "GROUP BY sf.flaggedStudent.id, sf.flaggedStudent.firstName, sf.flaggedStudent.lastName, sf.flaggedStudent.email")

@@ -12,9 +12,8 @@ import ma.ensa.internHub.mappers.CompanyMapper;
 import ma.ensa.internHub.mappers.InternshipMapper;
 import ma.ensa.internHub.repositories.CompanyRepository;
 import ma.ensa.internHub.repositories.InternshipRepository;
+import ma.ensa.internHub.security.SecurityUtils;
 import ma.ensa.internHub.services.InternshipService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +29,7 @@ public class InternshipServiceImpl implements InternshipService {
     private final CompanyRepository companyRepository;
     private final InternshipMapper internshipMapper;
     private final CompanyMapper companyMapper;
+    private final String email = SecurityUtils.getCurrentUserEmail();
 
     @Override
     public long countInternshipsByWorkMode(WorkMode workMode) {
@@ -44,8 +44,7 @@ public class InternshipServiceImpl implements InternshipService {
     @Override
     @Transactional
     public InternshipResponse saveInternship(InternshipRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+
         Company company = companyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Company not found with email: " + email));
