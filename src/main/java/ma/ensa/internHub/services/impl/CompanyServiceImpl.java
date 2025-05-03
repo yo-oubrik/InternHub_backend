@@ -15,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
+import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
+import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.domain.entities.Company;
 import ma.ensa.internHub.domain.entities.PendingCompany;
@@ -114,4 +116,59 @@ public class CompanyServiceImpl implements CompanyService {
         return companyMapper.toResponse(company);
     }
 
+    @Override
+    public CompanyResponse getCompanyById(UUID id) {
+        return companyRepository.findById(id)
+                .map(companyMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
+    }
+
+    @Override
+    public CompanyResponse getCompanyByEmail(String email) {
+        return companyRepository.findByEmail(email)
+                .map(companyMapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found with email: " + email));
+    }
+
+    @Override
+    public void blockCompany(UUID id, NotificationRequest request) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
+
+        company.setBlocked(true);
+        company.setBlockedAt(LocalDateTime.now());
+        companyRepository.save(company);
+
+        if (request != null && company.getEmail() != null) {
+            emailNotificationService.sendDynamicEmailWithMultipartAttachments(
+                    EmailWithAttachmentsRequest.builder()
+                            .to(company.getEmail())
+                            .subject(request.getSubject())
+                            .recepientName(company.getName())
+                            .htmlBody(request.getMessage())
+                            .attachments(request.getAttachments())
+                            .build());
+        }
+    }
+
+    @Override
+    public void unblockCompany(UUID id, NotificationRequest request) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
+
+        company.setBlocked(false);
+        company.setBlockedAt(null);
+        companyRepository.save(company);
+
+        if (request != null && company.getEmail() != null) {
+            emailNotificationService.sendDynamicEmailWithMultipartAttachments(
+                    EmailWithAttachmentsRequest.builder()
+                            .to(company.getEmail())
+                            .subject(request.getSubject())
+                            .recepientName(company.getName())
+                            .htmlBody(request.getMessage())
+                            .attachments(request.getAttachments())
+                            .build());
+        }
+    }
 }
