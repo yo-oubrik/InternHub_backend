@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
+import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
 
@@ -22,4 +23,11 @@ public interface CompanyService {
 
     CompanyResponse confirmAndRegisterCompany(EmailVerificationRequest request);
 
+    void blockCompany(UUID id, NotificationRequest request);
+
+    void unblockCompany(UUID id, NotificationRequest request);
+
+    CompanyResponse getCompanyById(UUID id);
+
+    CompanyResponse getCompanyByEmail(String email);
 }

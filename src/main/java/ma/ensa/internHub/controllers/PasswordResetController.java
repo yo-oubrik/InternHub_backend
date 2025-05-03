@@ -11,8 +11,7 @@ import ma.ensa.internHub.services.PasswordResetService;
 @RequestMapping("/api/v1/password-reset")
 public class PasswordResetController {
 
-
-    private PasswordResetService passwordResetService;
+    private final PasswordResetService passwordResetService;
 
     @PostMapping("/request")
     public ResponseEntity<String> requestPasswordReset(@RequestParam String email) {

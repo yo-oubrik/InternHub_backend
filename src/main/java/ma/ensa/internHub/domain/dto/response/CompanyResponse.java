@@ -20,4 +20,6 @@ public class CompanyResponse {
     private LocalDateTime createdAt;
     private String profilePicture;
     private Links links;
+    private boolean blocked;
+    private LocalDateTime blockedAt;
 }
