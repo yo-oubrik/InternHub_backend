@@ -8,10 +8,11 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
+import ma.ensa.internHub.domain.dto.request.CompanyUpdateRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.domain.entities.Company;
 
-@Mapper(componentModel = "spring", imports = LocalDateTime.class , unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", imports = LocalDateTime.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CompanyMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -20,5 +21,6 @@ public interface CompanyMapper {
     CompanyResponse toResponse(Company company);
 
     @Mapping(target = "id", ignore = true)
-    void updateFromRequest(CompanyRequest request, @MappingTarget Company company);
+    @Mapping(target = "password", ignore = true)
+    void updateFromRequest(CompanyUpdateRequest request, @MappingTarget Company company);
 }

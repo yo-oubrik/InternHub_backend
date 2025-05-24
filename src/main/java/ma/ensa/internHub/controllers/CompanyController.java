@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.dto.request.CompanyUpdateRequest;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.services.CompanyService;
@@ -43,6 +46,12 @@ public class CompanyController {
     @GetMapping
     public List<CompanyResponse> getAllCompanies() {
         return companyService.getAllCompanies();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CompanyResponse> updateCompany(@PathVariable UUID id,
+            @RequestBody CompanyUpdateRequest request) {
+        return ResponseEntity.ok(companyService.updateCompany(id, request));
     }
 
     @GetMapping("/{id}")

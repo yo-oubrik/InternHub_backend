@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,14 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.CompanyRequest;
+import ma.ensa.internHub.domain.dto.request.CompanyUpdateRequest;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.domain.entities.Company;
 import ma.ensa.internHub.domain.entities.PendingCompany;
+import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.exception.DuplicateResourceException;
 import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
 import ma.ensa.internHub.exception.InvalidVerificationCodeException;
@@ -54,6 +58,20 @@ public class CompanyServiceImpl implements CompanyService {
         company.setPassword(passwordEncoder.encode(request.getPassword()));
         companyRepository.save(company);
 
+        return companyMapper.toResponse(company);
+    }
+
+    @Override
+    public CompanyResponse updateCompany(UUID id, CompanyUpdateRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Company company = companyRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+        if (!company.getId().equals(id)) {
+            throw new BadRequestException("You can only update your own account");
+        }
+        companyMapper.updateFromRequest(request, company);
+        company = companyRepository.save(company);
         return companyMapper.toResponse(company);
     }
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -18,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ma.ensa.internHub.domain.enums.Role;
+import ma.ensa.internHub.validation.Phone;
 
 @Entity
 @Data
@@ -29,11 +31,18 @@ public class Company extends User {
     @NotBlank(message = "Company name is required")
     private String name;
 
-    @Size(min = 10, max = 500, message = "Description must be between 10 and 500 characters")
+    @Column(columnDefinition = "TEXT", length = 10000)
+    @Size(min = 10, max = 10000, message = "Description must be between 10 and 10000 characters")
     private String description;
 
     @Pattern(regexp = "^\\d{15}$", message = "ICE must be exactly 15 digits")
     private String ice;
+
+    @Phone
+    private String tel;
+
+    @Embedded
+    private MapLocation location;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Internship> internships;
@@ -56,5 +65,10 @@ public class Company extends User {
     @Override
     public Role getRole() {
         return Role.COMPANY;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

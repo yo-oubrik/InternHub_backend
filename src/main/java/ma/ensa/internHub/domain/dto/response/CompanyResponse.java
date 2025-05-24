@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ensa.internHub.domain.entities.Links;
+import ma.ensa.internHub.domain.entities.MapLocation;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +17,9 @@ public class CompanyResponse {
     private String name;
     private String description;
     private String email;
-    // location
     private String ice;
+    private String tel;
+    private MapLocation location;
     private LocalDateTime createdAt;
     private String profilePicture;
     private Links links;
