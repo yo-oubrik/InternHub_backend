@@ -6,14 +6,21 @@ import ma.ensa.internHub.domain.dto.response.CompanyResponse;
 import ma.ensa.internHub.domain.dto.response.InternshipResponse;
 import ma.ensa.internHub.domain.entities.Company;
 import ma.ensa.internHub.domain.entities.Internship;
+import ma.ensa.internHub.domain.entities.InternshipType;
 import ma.ensa.internHub.domain.entities.WorkMode;
 import ma.ensa.internHub.exception.ResourceNotFoundException;
 import ma.ensa.internHub.mappers.CompanyMapper;
 import ma.ensa.internHub.mappers.InternshipMapper;
 import ma.ensa.internHub.repositories.CompanyRepository;
 import ma.ensa.internHub.repositories.InternshipRepository;
-import ma.ensa.internHub.security.SecurityUtils;
 import ma.ensa.internHub.services.InternshipService;
+import ma.ensa.internHub.specifications.InternshipSpecification;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +36,6 @@ public class InternshipServiceImpl implements InternshipService {
     private final CompanyRepository companyRepository;
     private final InternshipMapper internshipMapper;
     private final CompanyMapper companyMapper;
-    private final String email = SecurityUtils.getCurrentUserEmail();
 
     @Override
     public long countInternshipsByWorkMode(WorkMode workMode) {
@@ -42,8 +48,15 @@ public class InternshipServiceImpl implements InternshipService {
     }
 
     @Override
+    public long countInternshipsByCompanyId(UUID companyId) { // added
+        return internshipRepository.countByCompanyId(companyId);
+    }
+
+    @Override
     @Transactional
     public InternshipResponse saveInternship(InternshipRequest request) {
+        Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
+        String email = authenticatedUser.getName();
 
         Company company = companyRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -76,7 +89,6 @@ public class InternshipServiceImpl implements InternshipService {
     public InternshipResponse getInternshipById(UUID id) {
         Internship internship = internshipRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Internship not found with id: " + id));
-
         InternshipResponse response = internshipMapper.toResponse(internship);
         Company company = internship.getCompany();
         CompanyResponse companyResponse = companyMapper.toResponse(company);
@@ -111,4 +123,20 @@ public class InternshipServiceImpl implements InternshipService {
         internshipRepository.deleteById(id);
     }
 
+    @Override
+    public Page<InternshipResponse> searchInternships(String title, String city, List<InternshipType> types,
+            List<WorkMode> workModes, String paid, Pageable pageable) {
+
+        Specification<Internship> spec = InternshipSpecification.searchInternships(
+                title, city, types, workModes, paid);
+
+        return internshipRepository.findAll(spec, pageable).map(
+                (internship) -> {
+                    InternshipResponse response = internshipMapper.toResponse(internship);
+                    Company company = internship.getCompany();
+                    CompanyResponse companyResponse = companyMapper.toResponse(company);
+                    response.setCompany(companyResponse);
+                    return response;
+                });
+    }
 }

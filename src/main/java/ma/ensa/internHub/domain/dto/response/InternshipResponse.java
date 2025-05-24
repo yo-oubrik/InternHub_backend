@@ -1,5 +1,6 @@
 package ma.ensa.internHub.domain.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ensa.internHub.domain.entities.InternshipType;
+import ma.ensa.internHub.domain.entities.Location;
 import ma.ensa.internHub.domain.entities.SalaryType;
 import ma.ensa.internHub.domain.entities.WorkMode;
 
@@ -21,7 +23,11 @@ public class InternshipResponse {
 
     private CompanyResponse company;
 
+    private String city;
+
     private String description;
+
+    private LocalDateTime createdAt;
 
     private int duration;
 
@@ -29,7 +35,7 @@ public class InternshipResponse {
 
     private SalaryType salaryType;
 
-    private boolean isMotivationLetterRequired;
+    private boolean motivationLetterRequired;
 
     private String title;
 
@@ -42,4 +48,5 @@ public class InternshipResponse {
     private boolean negotiable;
 
     private boolean paid;
+
 }

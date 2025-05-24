@@ -3,6 +3,8 @@ package ma.ensa.internHub.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.ApplicationRequest;
+import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
+import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.ApplicationResponse;
 import ma.ensa.internHub.domain.entities.Application;
 import ma.ensa.internHub.domain.entities.Internship;
@@ -15,9 +17,13 @@ import ma.ensa.internHub.repositories.ApplicationRepository;
 import ma.ensa.internHub.repositories.InternshipRepository;
 import ma.ensa.internHub.repositories.StudentRepository;
 import ma.ensa.internHub.services.ApplicationService;
+import ma.ensa.internHub.services.EmailNotificationService;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.exception.ResourceNotFoundException;
 
 import java.util.List;
@@ -34,6 +40,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationMapper applicationMapper;
     private final StudentMapper studentMapper;
     private final InternshipMapper internshipMapper;
+    private final EmailNotificationService emailNotificationService;
 
     @Override
     public List<ApplicationResponse> getApplicationsByCompanyId(UUID companyId) {
@@ -49,8 +56,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<ApplicationResponse> getApplicationsByInternshipId(UUID internshipId) {
-        return applicationRepository.findAll().stream()
-                .filter(app -> app.getInternship() != null && app.getInternship().getId().equals(internshipId))
+        return applicationRepository.findByInternshipId(internshipId).stream()
                 .map(application -> {
                     ApplicationResponse response = applicationMapper.toResponse(application);
                     response.setStudentResponse(studentMapper.toResponse(application.getStudent()));
@@ -62,21 +68,45 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Long countApplicationsByCompanyId(UUID companyId) {
-        return applicationRepository.findAll().stream()
-                .filter(app -> app.getInternship() != null &&
-                        app.getInternship().getCompany() != null &&
-                        app.getInternship().getCompany().getId().equals(companyId))
-                .count();
+        return applicationRepository.countByInternshipCompanyId(companyId); // added here
+    }
+
+    @Override
+    public Boolean isAppliedToThisInternship(UUID internshipId, UUID studentId) {
+        return applicationRepository.existsByInternshipIdAndStudentId(internshipId, studentId); // added here
+    }
+
+    @Override
+    public Long countApplicationsByInternshipId(UUID internshipId) {
+        return applicationRepository.countByInternshipId(internshipId); // added here
     }
 
     @Override
     public Long countApplicationsByCompanyIdWithStatus(UUID companyId, ApplicationStatus status) {
-        return applicationRepository.findAll().stream()
-                .filter(app -> app.getInternship() != null &&
-                        app.getInternship().getCompany() != null &&
-                        app.getInternship().getCompany().getId().equals(companyId) &&
-                        app.getStatus() == status)
-                .count();
+        return applicationRepository.countByInternshipCompanyIdAndStatus(companyId, status); // added here
+    }
+
+    @Override
+    public Long countDistinctStudents() {
+        return applicationRepository.countDistinctStudentId();
+    }
+
+    @Override
+    public Long countDistinctStudentsByInternshipStatus(ApplicationStatus status) {
+        return applicationRepository.countDistinctStudentIdByInternshipStatus(status);
+    }
+    
+    @Override
+    public List<ApplicationResponse> getApplicationsByStudentId(UUID studentId){
+        studentRepository.findById(studentId)
+            .orElseThrow(() -> new EntityNotFoundException("Student Not Found"));
+        return applicationRepository.findByStudentId(studentId).stream()
+            .map(application -> {
+                ApplicationResponse response = applicationMapper.toResponse(application);
+                response.setStudentResponse(studentMapper.toResponse(application.getStudent()));
+                response.setInternshipResponse(internshipMapper.toResponse(application.getInternship()));
+                return response;
+            }).collect(Collectors.toList());
     }
 
     @Override
@@ -88,7 +118,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + email));
 
         Internship internship = internshipRepository.findById(request.getInternshipId())
-                .orElseThrow(() -> new ResourceNotFoundException("Internship not found with ID: " + request.getInternshipId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Internship not found with ID: " + request.getInternshipId()));
+        
+        applicationRepository.findByInternshipIdAndStudentId(request.getInternshipId(), student.getId())
+                .ifPresent(app -> {
+                    throw new BadRequestException("Student already applied to this internship");
+                });
 
         Application application = applicationMapper.toEntity(request);
         application.setStudent(student);
@@ -100,6 +136,58 @@ public class ApplicationServiceImpl implements ApplicationService {
         response.setStudentResponse(studentMapper.toResponse(saved.getStudent()));
         response.setInternshipResponse(internshipMapper.toResponse(saved.getInternship()));
         return response;
+    }
+
+    @Override
+    public void acceptApplication(UUID id, NotificationRequest request) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Application not found with id: " + id));
+
+        if (application.getStatus().equals(ApplicationStatus.ACCEPTED)) {
+            throw new BadRequestException("Application is already accepted");
+        }
+
+        if (application.getStatus().equals(ApplicationStatus.REJECTED)) {
+            throw new BadRequestException("Application is already rejected");
+        }
+
+        emailNotificationService.sendDynamicEmailWithMultipartAttachments(
+                EmailWithAttachmentsRequest.builder()
+                        .to(application.getStudent().getEmail())
+                        .subject(request.getSubject())
+                        .recepientName(application.getStudent().getFirstName())
+                        .htmlBody(request.getMessage())
+                        .attachments(request.getAttachments())
+                        .build());
+
+        application.setStatus(ApplicationStatus.ACCEPTED);
+        applicationRepository.save(application);
+    }
+
+    @Override
+    public void rejectApplication(UUID id, NotificationRequest request) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Application not found with id: " + id));
+
+        if (application.getStatus().equals(ApplicationStatus.ACCEPTED)) {
+            throw new BadRequestException("Application is already accepted");
+        }
+
+        if (application.getStatus().equals(ApplicationStatus.REJECTED)) {
+            throw new BadRequestException("Application is already rejected");
+        }
+
+        emailNotificationService.sendDynamicEmailWithMultipartAttachments(
+                EmailWithAttachmentsRequest.builder()
+                        .to(application.getStudent().getEmail())
+                        .subject(request.getSubject())
+                        .recepientName(application.getStudent().getFirstName())
+                        .htmlBody(request.getMessage())
+                        .attachments(request.getAttachments())
+                        .build());
+
+        application.setStatus(ApplicationStatus.REJECTED);
+        applicationRepository.save(application);
     }
 
     @Override

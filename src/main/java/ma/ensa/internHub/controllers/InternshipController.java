@@ -4,14 +4,20 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.InternshipRequest;
 import ma.ensa.internHub.domain.dto.response.InternshipResponse;
+import ma.ensa.internHub.domain.entities.InternshipType;
 import ma.ensa.internHub.domain.entities.WorkMode;
 import ma.ensa.internHub.services.InternshipService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/v1/internships")
@@ -35,6 +41,11 @@ public class InternshipController {
         return internshipService.countAllInternships();
     }
 
+    @GetMapping("/count/company/{companyId}") // added
+    public ResponseEntity<Long> countAllCompanyInternships(@PathVariable UUID companyId) {
+        return ResponseEntity.ok(internshipService.countInternshipsByCompanyId(companyId));
+    }
+
     @PostMapping
     public ResponseEntity<InternshipResponse> createInternship(@Valid @RequestBody InternshipRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,6 +65,19 @@ public class InternshipController {
     @GetMapping("/company/{companyId}")
     public ResponseEntity<List<InternshipResponse>> getInternshipsByCompany(@PathVariable UUID companyId) {
         return ResponseEntity.ok(internshipService.getInternshipsByCompanyId(companyId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<InternshipResponse>> searchInternships(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) List<InternshipType> types,
+            @RequestParam(required = false) List<WorkMode> workModes,
+            @RequestParam(required = false) String paid,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "40") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(internshipService.searchInternships(title, city, types, workModes, paid, pageable));
     }
 
     @DeleteMapping("/{id}")

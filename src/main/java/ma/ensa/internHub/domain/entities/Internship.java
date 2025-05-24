@@ -12,14 +12,17 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = false)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Internship {
+public class Internship extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -49,6 +52,9 @@ public class Internship {
     @Enumerated(EnumType.STRING)
     private WorkMode workMode;
 
+    @NotNull(message = "City is required")
+    private String city;
+
     @ElementCollection
     @Enumerated(EnumType.STRING)
     private List<InternshipType> tags;
@@ -62,12 +68,11 @@ public class Internship {
     private boolean negotiable;
 
     @NotNull(message = "motivation letter is required")
-    private boolean isMotivationLetterRequired; // motivationLetterRequired
+    private boolean motivationLetterRequired; // replace isMotivationLetterRequired with motivationLetterRequired
 
     private boolean paid;
 
     @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Application> applications = new ArrayList<>();
-
 }

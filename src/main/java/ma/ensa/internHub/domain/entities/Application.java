@@ -8,10 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ensa.internHub.domain.enums.ApplicationStatus;
-import ma.ensa.internHub.validation.ValidDate;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +18,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class Application {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
@@ -42,5 +41,11 @@ public class Application {
 
     @NotBlank(message = "CV is required")
     private String cv;
+
+    // add this function to manually enter the value of applicationDate
+    @PrePersist
+    private void onCreate() {
+        this.applicationDate = LocalDateTime.now();
+    }
 
 }
