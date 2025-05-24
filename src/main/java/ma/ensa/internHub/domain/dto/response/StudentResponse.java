@@ -1,6 +1,7 @@
 package ma.ensa.internHub.domain.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -29,4 +30,8 @@ public class StudentResponse {
     private Links links;
     private boolean blocked;
     private LocalDateTime blockedAt;
+    private List<ExperienceResponse> experiences;
+    private List<FormationResponse> formations;
+    private List<ProjectResponse> projects;
+    private List<CertificatResponse> certificates;
 }

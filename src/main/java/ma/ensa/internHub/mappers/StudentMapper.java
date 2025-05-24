@@ -8,10 +8,11 @@ import org.mapstruct.ReportingPolicy;
 import java.time.LocalDateTime;
 
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
+import ma.ensa.internHub.domain.dto.request.StudentUpdateRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
 import ma.ensa.internHub.domain.entities.Student;
 
-@Mapper(componentModel = "spring", imports = LocalDateTime.class,unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", imports = LocalDateTime.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface StudentMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -20,5 +21,6 @@ public interface StudentMapper {
     StudentResponse toResponse(Student student);
 
     @Mapping(target = "id", ignore = true)
-    void updateFromRequest(StudentRequest request, @MappingTarget Student student);
+    @Mapping(target = "password", ignore = true)
+    void updateFromRequest(StudentUpdateRequest request, @MappingTarget Student student);
 }

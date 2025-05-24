@@ -1,10 +1,12 @@
 package ma.ensa.internHub.domain.entities;
 
 import java.util.List;
+
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -49,6 +51,7 @@ public class Student extends User {
     @Embedded
     private Links links;
 
+    @Column(columnDefinition = "TEXT")
     private String profileDescription;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)

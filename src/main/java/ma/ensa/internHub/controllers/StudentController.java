@@ -1,10 +1,15 @@
 package ma.ensa.internHub.controllers;
 
+import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import ma.ensa.internHub.domain.dto.request.StudentUpdateRequest;
+import ma.ensa.internHub.domain.dto.response.StudentResponse;
+import ma.ensa.internHub.services.StudentService;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
-import ma.ensa.internHub.domain.dto.request.StudentRequest;
-import ma.ensa.internHub.domain.dto.response.StudentResponse;
-import ma.ensa.internHub.services.StudentService;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -48,7 +49,8 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponse> updateStudent(@PathVariable UUID id, @RequestBody StudentRequest request) {
+    public ResponseEntity<StudentResponse> updateStudent(@PathVariable UUID id,
+            @RequestBody StudentUpdateRequest request) {
         return ResponseEntity.ok(studentService.updateStudentById(id, request));
     }
 

@@ -20,8 +20,13 @@ import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.request.StudentRequest;
+import ma.ensa.internHub.domain.dto.request.StudentUpdateRequest;
 import ma.ensa.internHub.domain.dto.response.StudentResponse;
+import ma.ensa.internHub.domain.entities.Certificat;
+import ma.ensa.internHub.domain.entities.Experience;
+import ma.ensa.internHub.domain.entities.Formation;
 import ma.ensa.internHub.domain.entities.PendingStudent;
+import ma.ensa.internHub.domain.entities.Project;
 import ma.ensa.internHub.domain.entities.Student;
 import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.exception.DuplicateResourceException;
@@ -29,7 +34,11 @@ import ma.ensa.internHub.exception.ExpiredVerificationCodeException;
 import ma.ensa.internHub.exception.InvalidVerificationCodeException;
 import ma.ensa.internHub.mappers.PendingStudentMapper;
 import ma.ensa.internHub.mappers.StudentMapper;
+import ma.ensa.internHub.repositories.CertificatRepository;
+import ma.ensa.internHub.repositories.ExperienceRepository;
+import ma.ensa.internHub.repositories.FormationRepository;
 import ma.ensa.internHub.repositories.PendingStudentRepository;
+import ma.ensa.internHub.repositories.ProjectRepository;
 import ma.ensa.internHub.repositories.StudentRepository;
 import ma.ensa.internHub.repositories.UserRepository;
 import ma.ensa.internHub.services.EmailNotificationService;
@@ -42,6 +51,10 @@ public class StudentServiceImpl implements StudentService {
 
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
+    private final ExperienceRepository experienceRepository;
+    private final FormationRepository formationRepository;
+    private final ProjectRepository projectRepository;
+    private final CertificatRepository certificatRepository;
     private final StudentMapper studentMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailNotificationService emailNotificationService;
@@ -61,6 +74,7 @@ public class StudentServiceImpl implements StudentService {
         student.setPassword(passwordEncoder.encode(request.getPassword()));
 
         studentRepository.save(student);
+        includeAssociations(student);
         return studentMapper.toResponse(student);
     }
 
@@ -80,6 +94,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentResponse getStudentById(UUID id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        includeAssociations(student);
         return studentMapper.toResponse(student);
     }
 
@@ -87,20 +102,21 @@ public class StudentServiceImpl implements StudentService {
     public StudentResponse getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        includeAssociations(student);
         return studentMapper.toResponse(student);
     }
 
     @Override
-    public StudentResponse updateStudentById(UUID id, StudentRequest request) {
+    public StudentResponse updateStudentById(UUID id, StudentUpdateRequest request) {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         String currentEmail = authentication.getName();
         Student currentStudent = studentRepository.findByEmail(currentEmail)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
-        if (currentStudent.getId().equals(id))
+        if (!currentStudent.getId().equals(id))
             throw new BadRequestException("You can only update your own account");
         studentMapper.updateFromRequest(request, currentStudent);
-        studentRepository.save(currentStudent);
+        currentStudent = studentRepository.save(currentStudent);
         return studentMapper.toResponse(currentStudent);
     }
 
@@ -186,5 +202,16 @@ public class StudentServiceImpl implements StudentService {
         student.setBlocked(false);
         student.setBlockedAt(null);
         studentRepository.save(student);
+    }
+
+    private void includeAssociations(Student student) {
+        List<Experience> experiences = experienceRepository.findByStudentId(student.getId());
+        student.setExperiences(experiences);
+        List<Formation> formations = formationRepository.findByStudentId(student.getId());
+        student.setFormations(formations);
+        List<Project> projects = projectRepository.findByStudentId(student.getId());
+        student.setProjects(projects);
+        List<Certificat> certificates = certificatRepository.findByStudentId(student.getId());
+        student.setCertificates(certificates);
     }
 }

@@ -1,13 +1,15 @@
 package ma.ensa.internHub.services;
 
+import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
+import ma.ensa.internHub.domain.dto.request.StudentRequest;
+import ma.ensa.internHub.domain.dto.request.StudentUpdateRequest;
+import ma.ensa.internHub.domain.dto.response.StudentResponse;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
-import ma.ensa.internHub.domain.dto.request.StudentRequest;
-import ma.ensa.internHub.domain.dto.response.StudentResponse;
 
 public interface StudentService {
     StudentResponse createStudent(StudentRequest request);
@@ -20,7 +22,7 @@ public interface StudentService {
 
     StudentResponse getStudentByEmail(String email);
 
-    StudentResponse updateStudentById(UUID id, StudentRequest request);
+    StudentResponse updateStudentById(UUID id, StudentUpdateRequest request);
 
     Map<String, Long> countStudentsByMonth();
 
