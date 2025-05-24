@@ -62,37 +62,41 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/students/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/applications/count/students/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/company/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/count").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/count/remote").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/v1/internships/count/on-site").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/internships/search").permitAll()
                         .requestMatchers("/api/v1/password-reset/**").permitAll()
+
                         // Admin endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/v1/students").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, "/api/v1/companies").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/api/v1/flagged-students/{id}/ignore")
                         .hasRole(Role.ADMIN.name())
+                        // move get students and get companies to any authenticated user
+
                         // Student endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/applications").hasRole(Role.STUDENT.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/applications").hasRole(Role.STUDENT.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/applications").hasRole(Role.STUDENT.name())
-
 
                         .requestMatchers("/api/v1/certificates/**").hasRole(Role.STUDENT.name())
                         .requestMatchers("/api/v1/experiences/**").hasRole(Role.STUDENT.name())
                         .requestMatchers("/api/v1/formations/**").hasRole(Role.STUDENT.name())
                         .requestMatchers("/api/v1/Projects/**").hasRole(Role.STUDENT.name())
 
-
-
-
                         // Company endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/v1/internships").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/internships").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/internships/{id}").hasRole(Role.COMPANY.name())
-                        .requestMatchers(HttpMethod.GET,"/api/v1/applications/company/{companyId}").hasRole(Role.COMPANY.name())
-                        .requestMatchers(HttpMethod.GET, "/api/v1/applications/internship/{internshipId}").hasRole(Role.COMPANY.name())
-                        .requestMatchers(HttpMethod.GET,"/api/v1/applications/company/{companyId}/count").hasRole(Role.COMPANY.name())
-                        .requestMatchers(HttpMethod.GET,"/api/v1/applications/company/{companyId}/count/{status}").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/companies/{id}").hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/applications/company/{companyId}")
+                        .hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/applications/internship/{internshipId}")
+                        .hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/applications/company/{companyId}/count")
+                        .hasRole(Role.COMPANY.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/applications/company/{companyId}/count/{status}")
+                        .hasRole(Role.COMPANY.name())
 
                         // Secure everything else
                         .anyRequest().authenticated())

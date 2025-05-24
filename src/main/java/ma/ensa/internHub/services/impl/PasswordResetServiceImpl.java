@@ -4,12 +4,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.entities.PasswordResetToken;
 import ma.ensa.internHub.domain.entities.User;
 import ma.ensa.internHub.exception.InvalidVerificationCodeException;
@@ -21,19 +21,13 @@ import ma.ensa.internHub.services.EmailNotificationService;
 import ma.ensa.internHub.services.PasswordResetService;
 
 @Service
+@RequiredArgsConstructor
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-        @Autowired
-        private PasswordResetTokenRepository passwordResetTokenRepository;
-
-        @Autowired
-        private UserRepository userRepository;
-
-        @Autowired
-        private EmailNotificationService emailNotificationService;
-
-        @Autowired
-        private PasswordEncoder passwordEncoder;
+        private final PasswordResetTokenRepository passwordResetTokenRepository;
+        private final UserRepository userRepository;
+        private final EmailNotificationService emailNotificationService;
+        private final PasswordEncoder passwordEncoder;
 
         @Value("${app.frontend.url}")
         private String frontendUrl;
