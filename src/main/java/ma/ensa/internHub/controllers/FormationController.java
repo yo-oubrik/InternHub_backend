@@ -18,7 +18,7 @@ public class FormationController {
 
     private final FormationService formationService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<FormationResponse> createFormation(@RequestBody FormationRequest request) {
         FormationResponse response = formationService.createFormation(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);

@@ -3,17 +3,12 @@ package ma.ensa.internHub.services.impl;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.ExperienceRequest;
 import ma.ensa.internHub.domain.dto.response.ExperienceResponse;
-import ma.ensa.internHub.domain.entities.Company;
 import ma.ensa.internHub.domain.entities.Experience;
 import ma.ensa.internHub.domain.entities.Student;
 import ma.ensa.internHub.exception.ResourceNotFoundException;
-import ma.ensa.internHub.mappers.CompanyMapper;
 import ma.ensa.internHub.mappers.ExperienceMapper;
-import ma.ensa.internHub.mappers.StudentMapper;
-import ma.ensa.internHub.repositories.CompanyRepository;
 import ma.ensa.internHub.repositories.ExperienceRepository;
 import ma.ensa.internHub.repositories.StudentRepository;
-import ma.ensa.internHub.security.SecurityUtils;
 import ma.ensa.internHub.services.ExperienceService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,27 +24,21 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     private final ExperienceRepository experienceRepository;
     private final StudentRepository studentRepository;
-    private final CompanyRepository companyRepository;
     private final ExperienceMapper experienceMapper;
-    private final StudentMapper studentMapper;
-    private final CompanyMapper companyMapper;
-    private final  String email = SecurityUtils.getCurrentUserEmail();
 
     @Override
     public ExperienceResponse createExperience(ExperienceRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
-        Company company = companyRepository.findById(request.getCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
 
         Experience experience = experienceMapper.toEntity(request);
         experience.setStudent(student);
-        experience.setCompany(company);
         experience = experienceRepository.save(experience);
 
         ExperienceResponse response = experienceMapper.toResponse(experience);
-        response.setStudentResponse(studentMapper.toResponse(student));
-        response.setCompanyResponse(companyMapper.toResponse(company));
 
         return response;
     }
@@ -60,8 +49,6 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
 
         ExperienceResponse response = experienceMapper.toResponse(experience);
-        response.setStudentResponse(studentMapper.toResponse(experience.getStudent()));
-        response.setCompanyResponse(companyMapper.toResponse(experience.getCompany()));
 
         return response;
     }
@@ -69,12 +56,7 @@ public class ExperienceServiceImpl implements ExperienceService {
     @Override
     public List<ExperienceResponse> getAllExperiences() {
         return experienceRepository.findAll().stream()
-                .map(experience -> {
-                    ExperienceResponse response = experienceMapper.toResponse(experience);
-                    response.setStudentResponse(studentMapper.toResponse(experience.getStudent()));
-                    response.setCompanyResponse(companyMapper.toResponse(experience.getCompany()));
-                    return response;
-                })
+                .map(experienceMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -85,20 +67,15 @@ public class ExperienceServiceImpl implements ExperienceService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
+
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
-        Company company = companyRepository.findById(request.getCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
-
         experienceMapper.updateEntityFromRequest(request, experience);
         experience.setStudent(student);
-        experience.setCompany(company);
         experience = experienceRepository.save(experience);
 
         ExperienceResponse response = experienceMapper.toResponse(experience);
-        response.setStudentResponse(studentMapper.toResponse(student));
-        response.setCompanyResponse(companyMapper.toResponse(company));
 
         return response;
     }

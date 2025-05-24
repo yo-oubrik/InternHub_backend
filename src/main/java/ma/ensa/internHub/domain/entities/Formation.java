@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ma.ensa.internHub.validation.ValidDate;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -34,11 +33,10 @@ public class Formation {
     @ValidDate(message = "End date must be in MMM-yyyy format or 'PRESENT'")
     private String endDate;
 
-    @ManyToOne
-    private Company company;
+    @NotBlank(message = "Company name is required")
+    private String company;
 
     @ManyToOne
     private Student student;
-
 
 }

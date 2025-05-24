@@ -13,5 +13,4 @@ public class ProjectResponse {
     private String title;
     private String image;
     private String link;
-    private StudentResponse student;
 }

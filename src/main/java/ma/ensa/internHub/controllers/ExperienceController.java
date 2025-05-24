@@ -19,7 +19,7 @@ public class ExperienceController {
 
     private final ExperienceService experienceService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ExperienceResponse> createExperience(@Valid @RequestBody ExperienceRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(experienceService.createExperience(request));

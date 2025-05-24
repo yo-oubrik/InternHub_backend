@@ -19,7 +19,7 @@ public class CertificatController {
 
     private final CertificatService certificatService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<CertificatResponse> createCertificate(@Valid @RequestBody CertificatRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(certificatService.createCertificat(request));

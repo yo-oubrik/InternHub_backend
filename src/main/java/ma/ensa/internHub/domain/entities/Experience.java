@@ -2,9 +2,9 @@ package ma.ensa.internHub.domain.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ma.ensa.internHub.validation.ValidDate;
@@ -31,15 +31,14 @@ public class Experience {
     @ValidDate(message = "End date must be in MMM-yyyy format or 'PRESENT'")
     private String endDate;
 
-    @NotBlank(message = "Description is required")
+    @Column(columnDefinition = "TEXT", length = 1000) // added
+    @Size(min = 50, max = 1000, message = "Description must be between 25 and 1000 characters") // added
     private String description;
 
-    @ManyToOne
-    private Company company;
+    @NotBlank(message = "Company name is required")
+    private String company;
 
     @ManyToOne
     private Student student;
 
-
 }
-

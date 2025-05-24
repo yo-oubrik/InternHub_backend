@@ -1,8 +1,8 @@
 package ma.ensa.internHub.domain.dto.response;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 import java.util.UUID;
 
@@ -16,6 +16,5 @@ public class ExperienceResponse {
     private String startDate;
     private String endDate;
     private String description;
-    private CompanyResponse companyResponse;
-    private StudentResponse studentResponse;
+    private String company;
 }

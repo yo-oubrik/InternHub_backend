@@ -1,6 +1,5 @@
 package ma.ensa.internHub.domain.dto.request;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
@@ -27,8 +26,8 @@ public class FormationRequest {
     @ValidDate(message = "End date must be in MMM-yyyy format or 'PRESENT'")
     private String endDate;
 
-    @NotNull(message = "Company ID is required")
-    private UUID companyId;
+    @NotBlank(message = "Company name is required")
+    private String company; // updated
 
     @NotNull(message = "Student ID is required")
     private UUID studentId;
