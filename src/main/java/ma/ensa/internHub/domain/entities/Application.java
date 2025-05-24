@@ -1,6 +1,16 @@
 package ma.ensa.internHub.domain.entities;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,8 +19,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ensa.internHub.domain.enums.ApplicationStatus;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -21,14 +29,6 @@ public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @ManyToOne
-    @NotNull(message = "Student is required")
-    private Student student;
-
-    @ManyToOne
-    @NotNull(message = "Internship is required")
-    private Internship internship;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is required")
@@ -48,4 +48,10 @@ public class Application {
         this.applicationDate = LocalDateTime.now();
     }
 
+    @ManyToOne
+    @NotNull(message = "Internship is required")
+    private Internship internship;
+    @ManyToOne
+    @NotNull(message = "Student is required")
+    private Student student;
 }
