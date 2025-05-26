@@ -25,7 +25,7 @@ public interface StudentFlagRepository extends JpaRepository<StudentFlag, UUID> 
             "sf.flaggedStudent.email, COUNT(sf), MAX(sf.createdAt)) " +
             "FROM StudentFlag sf " +
             "WHERE sf.reportStatus = :status " +
+            "AND sf.flaggedStudent.blocked = false " +
             "GROUP BY sf.flaggedStudent.id, sf.flaggedStudent.firstName, sf.flaggedStudent.lastName, sf.flaggedStudent.email")
     List<FlaggedStudentOverview> findFlaggedStudentsOverviewByStatus(@Param("status") ReportStatus status);
-
 }

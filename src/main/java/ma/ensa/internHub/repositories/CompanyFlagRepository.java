@@ -27,6 +27,7 @@ public interface CompanyFlagRepository extends JpaRepository<CompanyFlag, UUID> 
             "COUNT(cf), MAX(cf.createdAt)) " +
             "FROM CompanyFlag cf " +
             "WHERE cf.reportStatus = :status " +
+            "AND cf.flaggedCompany.blocked = false " +
             "GROUP BY cf.flaggedCompany.id, cf.flaggedCompany.name, cf.flaggedCompany.email")
     List<FlaggedCompanyOverview> findFlaggedCompaniesOverviewByStatus(@Param("status") ReportStatus status);
 }
