@@ -16,7 +16,8 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT MONTH(s.createdAt), COUNT(s) FROM Student s GROUP BY MONTH(s.createdAt)")
+    @Query("SELECT MONTH(s.createdAt), COUNT(s) FROM Student s WHERE YEAR(s.createdAt) = YEAR(CURRENT_DATE) GROUP BY MONTH(s.createdAt)")
     List<Object[]> countStudentsByMonth();
 
+    long countByBlockedTrue();
 }

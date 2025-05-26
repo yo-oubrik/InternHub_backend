@@ -79,4 +79,9 @@ public class CompanyController {
         companyService.unblockCompany(id, request);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/count-blocked")
+    public long getBlockedCompaniesCount() {
+        return companyService.countBlockedCompanies();
+    }
 }

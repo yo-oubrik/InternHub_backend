@@ -75,4 +75,9 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/count-blocked")
+    public long getBlockedStudentsCount() {
+        return studentService.countBlockedStudents();
+    }
+
 }

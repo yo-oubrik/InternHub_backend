@@ -31,4 +31,6 @@ public interface StudentService {
     void blockStudent(UUID id, NotificationRequest request);
 
     void unblockStudent(UUID id, NotificationRequest request);
+
+    long countBlockedStudents();
 }

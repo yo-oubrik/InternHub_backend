@@ -189,4 +189,9 @@ public class CompanyServiceImpl implements CompanyService {
                             .build());
         }
     }
+
+    @Override
+    public long countBlockedCompanies() {
+        return companyRepository.countByBlockedTrue();
+    }
 }

@@ -214,4 +214,9 @@ public class StudentServiceImpl implements StudentService {
         List<Certificat> certificates = certificatRepository.findByStudentId(student.getId());
         student.setCertificates(certificates);
     }
+
+    @Override
+    public long countBlockedStudents() {
+        return studentRepository.countByBlockedTrue();
+    }
 }

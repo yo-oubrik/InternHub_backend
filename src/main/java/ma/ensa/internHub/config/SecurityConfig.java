@@ -62,6 +62,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/students/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count-by-month").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/companies/count").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/students/count-blocked").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/companies/count-blocked").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/applications/count/students/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/company/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/internships/count").permitAll()

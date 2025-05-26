@@ -16,6 +16,8 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT MONTH(c.createdAt), COUNT(c) FROM Company c GROUP BY MONTH(c.createdAt)")
+    @Query("SELECT MONTH(c.createdAt), COUNT(c) FROM Company c WHERE YEAR(c.createdAt) = YEAR(CURRENT_DATE) GROUP BY MONTH(c.createdAt)")
     List<Object[]> countCompaniesByMonth();
+
+    long countByBlockedTrue();
 }

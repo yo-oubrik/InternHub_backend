@@ -9,6 +9,7 @@ import ma.ensa.internHub.domain.dto.request.CompanyUpdateRequest;
 import ma.ensa.internHub.domain.dto.request.EmailVerificationRequest;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyResponse;
+import ma.ensa.internHub.repositories.CompanyRepository;
 
 public interface CompanyService {
     CompanyResponse createCompany(CompanyRequest request);
@@ -32,4 +33,6 @@ public interface CompanyService {
     CompanyResponse getCompanyById(UUID id);
 
     CompanyResponse getCompanyByEmail(String email);
+
+    long countBlockedCompanies();
 }
