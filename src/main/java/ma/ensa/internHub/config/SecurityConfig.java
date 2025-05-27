@@ -100,7 +100,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/applications/company/{companyId}/count/{status}")
                         .hasRole(Role.COMPANY.name())
 
-                        // Secure everything else
+                        // Flag endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/v1/flagged-companies").hasRole(Role.STUDENT.name())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/flagged-students").hasRole(Role.COMPANY.name())
+
+                        // Ensure all other endpoints require authentication
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.UUID;
 
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
+import ma.ensa.internHub.domain.dto.request.CreateFlagRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyFlagResponse;
 import ma.ensa.internHub.domain.dto.response.FlaggedCompanyOverview;
 
 public interface CompanyFlagService {
+    void createCompanyFlag(CreateFlagRequest request);
+
     long countUnresolvedCompanyFlags();
 
     List<FlaggedCompanyOverview> getFlaggedCompaniesOverview();

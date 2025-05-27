@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
+import ma.ensa.internHub.domain.dto.request.CreateFlagRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyFlagResponse;
 import ma.ensa.internHub.domain.dto.response.FlaggedCompanyOverview;
 import ma.ensa.internHub.services.CompanyFlagService;
@@ -22,6 +24,11 @@ import ma.ensa.internHub.services.CompanyFlagService;
 @RequiredArgsConstructor
 public class CompanyFlagController {
     private final CompanyFlagService companyFlagService;
+
+    @PostMapping
+    public void createCompanyFlag(@RequestBody CreateFlagRequest request) {
+        companyFlagService.createCompanyFlag(request);
+    }
 
     @GetMapping("/count")
     public long countUnresolvedCompanyFlags() {

@@ -9,14 +9,20 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
+import ma.ensa.internHub.domain.dto.request.CreateFlagRequest;
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
 import ma.ensa.internHub.domain.dto.response.StudentFlagResponse;
+import ma.ensa.internHub.domain.entities.Company;
+import ma.ensa.internHub.domain.entities.Student;
+import ma.ensa.internHub.domain.entities.StudentFlag;
 import ma.ensa.internHub.domain.enums.ReportStatus;
 import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.mappers.StudentFlagMapper;
 import ma.ensa.internHub.repositories.StudentFlagRepository;
+import ma.ensa.internHub.repositories.StudentRepository;
 import ma.ensa.internHub.services.EmailNotificationService;
 import ma.ensa.internHub.services.StudentFlagService;
+import ma.ensa.internHub.utils.AuthUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +30,8 @@ public class StudentFlagServiceImpl implements StudentFlagService {
     private final StudentFlagRepository studentFlagRepository;
     private final StudentFlagMapper studentFlagMapper;
     private final EmailNotificationService emailNotificationService;
+    private final StudentRepository studentRepository;
+    private final AuthUtils authUtils;
 
     @Override
     public long countUnresolvedStudentFlags() {
@@ -87,6 +95,24 @@ public class StudentFlagServiceImpl implements StudentFlagService {
                         .attachments(request.getAttachments()).build());
 
         studentFlag.setReportStatus(ReportStatus.WARNED);
+        studentFlagRepository.save(studentFlag);
+    }
+
+    @Override
+    public void createStudentFlag(CreateFlagRequest request) {
+        Company flaggingCompany = authUtils.getCurrentCompany();
+        Student flaggedStudent = studentRepository.findById(request.getTargetId())
+                .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + request.getTargetId()));
+
+        StudentFlag studentFlag = StudentFlag.builder()
+                .flaggedStudent(flaggedStudent)
+                .flaggedByCompany(flaggingCompany)
+                .reason(request.getReason())
+                .description(request.getDescription())
+                .screenshots(request.getScreenshots())
+                .reportStatus(ReportStatus.UNRESOLVED)
+                .build();
+
         studentFlagRepository.save(studentFlag);
     }
 }

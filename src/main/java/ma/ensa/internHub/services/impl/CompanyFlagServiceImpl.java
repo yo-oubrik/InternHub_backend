@@ -9,14 +9,21 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.EmailWithAttachmentsRequest;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
+import ma.ensa.internHub.domain.dto.request.CreateFlagRequest;
 import ma.ensa.internHub.domain.dto.response.CompanyFlagResponse;
 import ma.ensa.internHub.domain.dto.response.FlaggedCompanyOverview;
+import ma.ensa.internHub.domain.entities.Company;
+import ma.ensa.internHub.domain.entities.CompanyFlag;
+import ma.ensa.internHub.domain.entities.Student;
 import ma.ensa.internHub.domain.enums.ReportStatus;
 import ma.ensa.internHub.exception.BadRequestException;
 import ma.ensa.internHub.mappers.CompanyFlagMapper;
 import ma.ensa.internHub.repositories.CompanyFlagRepository;
+import ma.ensa.internHub.repositories.CompanyRepository;
+import ma.ensa.internHub.repositories.StudentRepository;
 import ma.ensa.internHub.services.CompanyFlagService;
 import ma.ensa.internHub.services.EmailNotificationService;
+import ma.ensa.internHub.utils.AuthUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +31,9 @@ public class CompanyFlagServiceImpl implements CompanyFlagService {
     private final CompanyFlagRepository companyFlagRepository;
     private final CompanyFlagMapper companyFlagMapper;
     private final EmailNotificationService emailNotificationService;
+    private final CompanyRepository companyRepository;
+    private final StudentRepository studentRepository;
+    private final AuthUtils authUtils;
 
     @Override
     public long countUnresolvedCompanyFlags() {
@@ -87,6 +97,24 @@ public class CompanyFlagServiceImpl implements CompanyFlagService {
                         .attachments(request.getAttachments()).build());
 
         companyFlag.setReportStatus(ReportStatus.WARNED);
+        companyFlagRepository.save(companyFlag);
+    }
+
+    @Override
+    public void createCompanyFlag(CreateFlagRequest request) {
+        Student flaggingStudent = authUtils.getCurrentStudent();
+        Company flaggedCompany = companyRepository.findById(request.getTargetId())
+                .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + request.getTargetId()));
+
+        CompanyFlag companyFlag = CompanyFlag.builder()
+                .flaggedCompany(flaggedCompany)
+                .flaggedByStudent(flaggingStudent)
+                .reason(request.getReason())
+                .description(request.getDescription())
+                .screenshots(request.getScreenshots())
+                .reportStatus(ReportStatus.UNRESOLVED)
+                .build();
+
         companyFlagRepository.save(companyFlag);
     }
 }

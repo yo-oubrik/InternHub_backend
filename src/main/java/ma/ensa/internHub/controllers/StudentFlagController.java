@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import ma.ensa.internHub.domain.dto.request.NotificationRequest;
+import ma.ensa.internHub.domain.dto.request.CreateFlagRequest;
 import ma.ensa.internHub.domain.dto.response.FlaggedStudentOverview;
 import ma.ensa.internHub.domain.dto.response.StudentFlagResponse;
 import ma.ensa.internHub.services.StudentFlagService;
@@ -22,6 +24,11 @@ import ma.ensa.internHub.services.StudentFlagService;
 @RequiredArgsConstructor
 public class StudentFlagController {
     private final StudentFlagService studentFlagService;
+
+    @PostMapping
+    public void createStudentFlag(@RequestBody CreateFlagRequest request) {
+        studentFlagService.createStudentFlag(request);
+    }
 
     @GetMapping("/{id}/flags")
     public List<StudentFlagResponse> getStudentFlagsHistory(@PathVariable UUID id) {

@@ -27,10 +27,6 @@ public class Internship extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotNull(message = "Company is required")
-    @ManyToOne
-    private Company company;
-
     @NotBlank(message = "Description is required")
     @Size(min = 120, message = "Description should be at least 120 characters")
     @Column(columnDefinition = "TEXT")
@@ -52,9 +48,6 @@ public class Internship extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private WorkMode workMode;
 
-    @NotNull(message = "City is required")
-    private String city;
-
     @ElementCollection
     @Enumerated(EnumType.STRING)
     private List<InternshipType> tags;
@@ -67,12 +60,19 @@ public class Internship extends BaseEntity {
     @NotNull(message = "negotiable status is required")
     private boolean negotiable;
 
-    @NotNull(message = "motivation letter is required")
-    private boolean motivationLetterRequired; // replace isMotivationLetterRequired with motivationLetterRequired
-
     private boolean paid;
+
+    @NotNull(message = "City is required")
+    private String city;
+
+    @NotNull(message = "motivation letter is required")
+    private boolean motivationLetterRequired;
 
     @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Application> applications = new ArrayList<>();
+
+    @NotNull(message = "Company is required")
+    @ManyToOne
+    private Company company;
 }
