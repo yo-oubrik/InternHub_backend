@@ -1,32 +1,32 @@
 # InternHub Backend
 
 Spring Boot REST API for managing internship applications and connecting students with companies.
+Frontend repo: [https://github.com/youssefoubrik/InternHub-Front-End](https://github.com/youssefoubrik/InternHub-Front-End)
 
 ## 🚀 Features
 
-- 🔐 **Authentication**: JWT-based, email verification, password reset
-- 👥 **User Roles**: Students, Companies, Admins
-- 📄 **Internship Management**: Post, search, apply, and track status
-- 📬 **Email Notifications**: Application updates and account actions
-- 📁 **File Upload**: CV/document support
-- 🔍 **Search & Filter**: Advanced query and pagination
-- 🛠️ **Admin Tools:** Dashboard with platform stats, user moderation, and flag verification
-
-- 📖 **Swagger Docs**: Auto-generated API docs
+* 🔐 **Authentication**: JWT-based, email verification, password reset
+* 👥 **User Roles**: Students, Companies, Admins
+* 📄 **Internship Management**: Post, search, apply, and track status
+* 📬 **Email Notifications**: Application updates and account actions
+* 📁 **File Upload**: CV/document support
+* 🔍 **Search & Filter**: Advanced query and pagination
+* 🛠️ **Admin Tools:** Dashboard with platform stats, user moderation, and flag verification
+* 📖 **Swagger Docs**: Auto-generated API docs
 
 ## 🛠 Tech Stack
 
-- **Java 17**, **Spring Boot 3.4.4**, **Spring Security**, **PostgreSQL**
-- **JWT**, **BCrypt**, **JJWT**, **Lombok**, **MapStruct**
-- **SpringDoc OpenAPI**, **Thymeleaf**, **Spring Mail**
+* **Java 17**, **Spring Boot 3.4.4**, **Spring Security**, **PostgreSQL**
+* **JWT**, **BCrypt**, **JJWT**, **Lombok**, **MapStruct**
+* **SpringDoc OpenAPI**, **Thymeleaf**, **Spring Mail**
 
 ## ⚙️ Setup
 
 ### Prerequisites
 
-- **Java 17+**
-- **Docker & Docker Compose**
-- **Maven** (or use included wrapper)
+* **Java 17+**
+* **Docker & Docker Compose**
+* **Maven** (or use included wrapper)
 
 ### Quick Start
 
@@ -73,9 +73,10 @@ docker-compose up -d
 ```
 
 6. **Access services:**
-   - Backend API: `http://localhost:8080`
-   - Database Admin (Adminer): `http://localhost:8888`
-   - Swagger UI: `http://localhost:8080/swagger-ui.html`
+
+   * Backend API: `http://localhost:8080`
+   * Database Admin (Adminer): `http://localhost:8888`
+   * Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ### Environment Variables
 
@@ -93,11 +94,11 @@ docker-compose up -d
 
 ### Database Access via Adminer
 
-- URL: `http://localhost:8888`
-- System: PostgreSQL
-- Server: `db`
-- Username: `postgres`
-- Password: Use your `DATABASE_PASSWORD` from `.env`
+* URL: `http://localhost:8888`
+* System: PostgreSQL
+* Server: `db`
+* Username: `postgres`
+* Password: Use your `DATABASE_PASSWORD` from `.env`
 
 ## 🔧 Configuration
 
@@ -121,8 +122,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ## 🌐 API Documentation
 
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-- **OpenAPI JSON**: `http://localhost:8080/v3/api-docs`
+* **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+* **OpenAPI JSON**: `http://localhost:8080/v3/api-docs`
 
 ## 🤝 Contributing
 
@@ -135,3 +136,4 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ## 📝 License
 
 MIT License - see `LICENSE` file for details
+
