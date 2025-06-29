@@ -23,7 +23,7 @@ Spring Boot REST API for managing internship applications and connecting student
 
 ### Prerequisites
 
-* Java 17+, Maven 3.6+, PostgreSQL 12+, Docker (optional)
+* Java 17+, Maven 3.6+, PostgreSQL 12+, Docker 
 
 ### Run with Docker (Recommended)
 
