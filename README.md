@@ -10,7 +10,8 @@ Spring Boot REST API for managing internship applications and connecting student
 - 📬 **Email Notifications**: Application updates and account actions
 - 📁 **File Upload**: CV/document support
 - 🔍 **Search & Filter**: Advanced query and pagination
-- 🛠️ **Admin Tools**: User flagging, certificate tracking
+- 🛠️ **Admin Tools:** Dashboard with platform stats, user moderation, and flag verification
+
 - 📖 **Swagger Docs**: Auto-generated API docs
 
 ## 🛠 Tech Stack
