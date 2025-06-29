@@ -5,7 +5,7 @@ services:
       - "5432:5432"
     restart: always
     environment:
-      POSTGRES_PASSWORD: changemeinprod!
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-changemeinprod!}
 
   adminer:
     image: adminer:latest
